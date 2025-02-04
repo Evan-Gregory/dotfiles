@@ -1,0 +1,43 @@
+[core]
+    pager = delta
+	editor = nvim
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true  # use n and N to move between diff sections
+    dark = true      # or light = true, or omit for auto-detection
+
+[merge]
+    conflictstyle = zdiff3
+[user]
+	email = evan.gregory@streametric.io
+
+[rebase]
+    updateRefs = true
+
+[alias]
+	l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+
+	a = add
+	ap = add -p
+	c = commit --verbose
+	cm = commit -m
+	ca = commit --amend --verbose
+
+	d = diff
+	ds = diff --stat
+	dc = diff --cached
+
+	s = status -s
+	ch = checkout
+	wa = worktree add
+
+	clone-for-worktrees = "!sh $HOME/dotfiles/git-clone-bare-for-worktrees.sh"
+
+	#list branches by last modified
+	b = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'"
+
+	#list all aliases
+	la = "!git config -l | grep alias | cut -c 7-"
