@@ -23,4 +23,10 @@ create_symlink nvim "$CONFIG_DIR/nvim"
 create_symlink git "$CONFIG_DIR/git"
 create_symlink kitty "$CONFIG_DIR/kitty"
 
+# Use sudo directly for system-wide symlink
+if [ -e "/etc/keyd/default.conf" ] || [ -L "/etc/keyd/default.conf" ]; then
+  sudo trash "/etc/keyd/default.conf"
+fi
+sudo ln -sf "$DOTFILES/keyd/default.conf" /etc/keyd/default.conf
+
 echo "===== Finished symlinking to dotfiles ====="

@@ -431,6 +431,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>:', builtin.commands, { desc = 'Commands n shi' })
       vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', { fg = '#6272a4', bg = '#282A36' })
       vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { fg = '#6272a4', bg = '#282A36' })
       vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', { fg = '#6272a4', bg = '#282A36' })
