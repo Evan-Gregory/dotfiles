@@ -30,7 +30,6 @@ return {
       config = function(_, opts)
         local dap = require 'dap'
         local dapui = require 'dapui'
-        dapui.setup(opts)
         dap.listeners.after.event_initialized['dapui_config'] = function()
           dapui.open {}
         end
@@ -45,6 +44,12 @@ return {
     'nvim-neotest/nvim-nio',
     'williamboman/mason.nvim',
     'jay-babu/mason-nvim-dap.nvim',
+    {
+      'nvim-telescope/telescope-dap.nvim',
+      config = function()
+        require('telescope').load_extension 'dap'
+      end,
+    },
     {
       'theHamsta/nvim-dap-virtual-text',
       opts = {},
@@ -198,24 +203,52 @@ return {
       -- Ensure that the debuggers for your chosen languages are installed.
       ensure_installed = {
         -- Update this list to include debuggers for your target languages.
-        'delve',
       },
     }
 
     -- Dap UI setup (see :help nvim-dap-ui for more information).
     dapui.setup {
+      layouts = {
+        {
+          elements = {
+            {
+              id = 'scopes',
+              size = 0.25,
+            },
+            {
+              id = 'breakpoints',
+              size = 0.25,
+            },
+            {
+              id = 'stacks',
+              size = 0.25,
+            },
+            {
+              id = 'watches',
+              size = 0.25,
+            },
+          },
+          position = 'right',
+          size = 40,
+        },
+        {
+          elements = {},
+          position = 'bottom',
+          size = 5,
+        },
+      },
+
       icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
       controls = {
         icons = {
           pause = '⏸',
-          play = '▶',
-          step_into = '⏎',
-          step_over = '⏭',
-          step_out = '⏮',
-          step_back = 'b',
-          run_last = '▶▶',
-          terminate = '⏹',
-          disconnect = '⏏',
+          play = '',
+          run_last = '',
+          step_back = '',
+          step_into = '',
+          step_out = '',
+          step_over = '',
+          terminate = '',
         },
       },
     }
@@ -231,7 +264,7 @@ return {
     --   local hl = (type == "Stopped") and "DapStop" or "DapBreak"
     --   vim.fn.sign_define(sign, { text = icon, texthl = hl, numhl = hl })
     -- end
-
+    require('dap-python').setup 'uv'
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
