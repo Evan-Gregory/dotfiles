@@ -68,20 +68,20 @@ return {
       end,
       desc = 'Harpoon quick menu',
     },
-    {
-      '<leader>h1',
-      function()
-        require('harpoon'):list('task1'):select()
-      end,
-      desc = 'Harpoon to file 1',
-    },
-    {
-      '<leader>h2',
-      function()
-        require('harpoon'):list('task2'):select()
-      end,
-      desc = 'Harpoon to file 2',
-    },
+    --    {
+    --      '<leader>h1',
+    --      function()
+    --        require('harpoon'):list('task1'):select()
+    --      end,
+    --      desc = 'Harpoon to file 1',
+    --    },
+    --    {
+    --      '<leader>h2',
+    --      function()
+    --        require('harpoon'):list('task2'):select()
+    --      end,
+    --      desc = 'Harpoon to file 2',
+    --    },
     {
       '<leader>1',
       function()
