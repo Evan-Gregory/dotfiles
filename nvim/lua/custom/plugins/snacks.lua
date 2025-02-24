@@ -1,6 +1,9 @@
 return {
   'snacks.nvim',
+  dependancy = { 'echasnovski/mini.sessions' },
   opts = {
+    statuscolumn = { enabled = true },
+    pickers = { enabled = true },
     dashboard = {
       preset = {
         pick = function(cmd, opts)

@@ -109,6 +109,9 @@ vim.keymap.set({ 'n', 'v', 'i' }, '<C-a>', '_')
 vim.keymap.set({ 'n', 'v', 'i' }, '<C-e>', 'g_')
 vim.keymap.set({ 'n' }, ']d', vim.diagnostic.goto_next)
 vim.keymap.set({ 'n' }, '[d', vim.diagnostic.goto_prev)
+vim.keymap.set({ 'n', 'v' }, '<leader>p', '"0p')
+vim.keymap.set({ 'n', 'v' }, '<leader>P', '"0P')
+
 vim.api.nvim_create_autocmd('VimEnter', {
   desc = 'Sets colorcolumn on line 80',
   callback = function()
@@ -249,6 +252,7 @@ require('lazy').setup({
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>C', group = '[C]opilot' },
       },
     },
     config = function(_, opts)
@@ -355,6 +359,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>:', builtin.commands, { desc = 'Commands n shi' })
+      vim.keymap.set('n', '<leader>st', builtin.lsp_document_symbols, { desc = '[S]earch treesitter' })
       vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', { fg = '#6272a4', bg = '#282A36' })
       vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { fg = '#6272a4', bg = '#282A36' })
       vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', { fg = '#6272a4', bg = '#282A36' })
@@ -404,6 +409,7 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+    priority = 500,
     -- TODO: this does not currently work
     opts = {
       diagnostics = {
@@ -641,6 +647,8 @@ require('lazy').setup({
           end,
         },
       }
+
+      vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#589ed7' })
       vim.diagnostic.config(opts.diagnostics)
       vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
         border = 'rounded',
