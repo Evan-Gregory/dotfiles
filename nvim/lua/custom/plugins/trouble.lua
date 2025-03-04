@@ -30,7 +30,7 @@ return {
     },
     {
       '<leader>cs',
-      '<cmd>Trouble symbols toggle focus=true win.size=.3 winblend=10<cr>',
+      '<cmd>Trouble symbols toggle focus=true win.size=.2 winblend=10<cr>',
       desc = 'Symbols (Trouble)',
     },
     {
