@@ -2,8 +2,9 @@ return {
   'snacks.nvim',
   dependancy = { 'echasnovski/mini.sessions' },
   opts = {
+    image = { enabled = true },
     statuscolumn = { enabled = true },
-    pickers = { enabled = true },
+    picker = { enabled = true },
     dashboard = {
       preset = {
         pick = function(cmd, opts)
@@ -33,4 +34,8 @@ return {
       },
     },
   },
+  config = function(_, opts)
+    vim.keymap.set('n', '<leader>si', '<cmd>lua Snacks.picker.icons()<cr>', { desc = 'Snacks: Icons' })
+    require('snacks').setup(opts)
+  end,
 }

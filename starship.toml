@@ -1,24 +1,45 @@
 # Use custom format:
 format="""
+$hostname\
 $directory\
 $git_branch\
+$direnv\
+$aws\
 $line_break\
-$character"""
+$cmd_duration\
+$character
+"""
+
+# TODO: add names for colors
+palette = 'cli'
+[palettes.cli]
+#git_orange = "#f16148"
 
 # Prompt symbols 
 [character]
-success_symbol = "[🞈](#a6e3a1 bold)"
-error_symbol = "[🞈](#f38ba8)"
-vicmd_symbol = "[🞈](#f9e2af)"
+success_symbol = "[∮](#a6e3a1 bold)"
+error_symbol = "[∲](#f38ba8)"
+vicmd_symbol = "[∮](#f9e2af)"
 
 [directory]
 format = "[]($style)[(bg:#89b4fa fg:#49628a)$path](bg:#89b4fa fg:#49628a)[ ]($style)"
-style = "bg:#1a1b26 fg:#89b4fa"
+style = "fg:#89b4fa"
 
 [git_branch]
-format = "[]($style)[[ ](bg:#89b4fa fg:#49628a bold)$branch](bg:#89b4fa fg:#4c4f69)[ ]($style)"
-style = "bg:#1a1b26 fg:#89b4fa"
+format = "[]($style)[[ ](bg:#f16148 fg:#49628a bold)$branch](bg:#f16148 fg:#4c4f69)[ ]($style)"
+style = "fg:#f16148"
 
 [cmd_duration]
 format = "[$duration]($style) "
 style = "yellow"
+
+[hostname]
+ssh_only = true
+format = "[]($style)[󰣀 ](bg:bold dimmed white fg:#49628a bold)$hostname](bg:bold dimmed white fg:#4c4f69)[ ]($style)"
+trim_at = "-"
+style = "fg: bold dimmed white"
+disabled = false
+
+[aws]
+format = "[]($style)[[☁ ](bg:#f9e2af fg:#49628a bold) on $profile ($region) $duration](bg:#f9e2af fg:#4c4f69)[ ]($style)"
+style = "fg:#f9e2af"

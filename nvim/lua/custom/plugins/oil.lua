@@ -163,7 +163,7 @@ return {
         commands = {},
         window = {
           position = 'right',
-          width = 50,
+          width = 30,
           mapping_options = {
             noremap = true,
             nowait = true,
@@ -368,7 +368,7 @@ return {
         },
       }
 
-      vim.keymap.set('n', '<leader>o', '<Cmd>Neotree toggle<CR>')
+      vim.keymap.set('n', '<leader>o', '<Cmd>Neotree toggle<CR>', { desc = '[O]pen NeoTree' })
       vim.api.nvim_set_hl(0, 'NeoTreeNormal', { fg = '#828bb8' })
       vim.api.nvim_set_hl(0, 'NeoTreeNormalNC', { fg = '#828bb8' })
     end,

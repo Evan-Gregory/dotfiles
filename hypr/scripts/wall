@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Usage: ./script.sh <IMAGE> [TRANSITION_TYPE] [TRANSITION_DURATION]
+
+IMAGE="$1"
+TRANSITION_TYPE="${2:-grow}"  # default to "grow"
+TRANSITION_DURATION="${3:-3}" # default to 3 seconds
+TRANSITION_POS="$(hyprctl cursorpos)"
+
+# Initialize swww if not already running
+if ! pgrep -x swww > /dev/null; then
+    swww-daemon &
+    sleep 1 &  # Give it a moment to initialize
+fi
+
+swww img --transition-type "$TRANSITION_TYPE" \
+         --transition-pos "$TRANSITION_POS" \
+         --transition-duration "$TRANSITION_DURATION" \
+         "$IMAGE"
+

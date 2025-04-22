@@ -109,8 +109,12 @@ vim.keymap.set({ 'n', 'v', 'i' }, '<C-a>', '_')
 vim.keymap.set({ 'n', 'v', 'i' }, '<C-e>', 'g_')
 vim.keymap.set({ 'n' }, ']d', vim.diagnostic.goto_next)
 vim.keymap.set({ 'n' }, '[d', vim.diagnostic.goto_prev)
-vim.keymap.set({ 'n', 'v' }, '<leader>p', '"0p')
-vim.keymap.set({ 'n', 'v' }, '<leader>P', '"0P')
+vim.keymap.set({ 'n', 'v' }, '<leader>p', '"0p', { desc = '[p]aste from system clipboard ->' })
+vim.keymap.set({ 'n', 'v' }, '<leader>P', '"0P', { desc = '[P]aste from system clipboard <-' })
+
+-- TODO: make this toggle-able
+vim.keymap.set('n', '<leader>ms', '<cmd>setlocal spell spelllang=en<cr>', { desc = '[s] Toggle spell check' })
+vim.keymap.set('n', '<leader>mS', '<cmd>setlocal spell spelllang=<cr>', { desc = '[s] Toggle spell check' })
 
 vim.api.nvim_create_autocmd('VimEnter', {
   desc = 'Sets colorcolumn on line 80',
@@ -120,7 +124,6 @@ vim.api.nvim_create_autocmd('VimEnter', {
 })
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
-
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
 --  See `:help vim.highlight.on_yank()`
@@ -153,6 +156,7 @@ vim.opt.rtp:prepend(lazypath)
 --
 --  To update plugins you can run
 --    :Lazy update
+vim.cmd 'let g:wiki_root = "~/wiki"'
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
@@ -183,6 +187,7 @@ require('lazy').setup({
       },
     },
   },
+  { 'ThePrimeagen/vim-be-good' },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -249,10 +254,11 @@ require('lazy').setup({
         { '<leader>d', group = '[D]ocument' },
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
+        { '<leader>w', group = '[W]iki' },
+        { '<leader>t', group = '[T]erminal' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-        { '<leader>C', group = '[C]opilot' },
+        { '<leader>ht', group = 'Git [H]unk [T]oggle', mode = { 'n', 'v' } },
+        -- { '<leader>C', group = '[C]opilot' },
       },
     },
     config = function(_, opts)
@@ -497,7 +503,7 @@ require('lazy').setup({
           -- Jump to the type of the word under your cursor.
           --  Useful when you're not sure what type a variable is and you want to see
           --  the definition of its *type*, not where it was *defined*.
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
+          map('gT', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
@@ -505,7 +511,7 @@ require('lazy').setup({
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+          map('<leader>cS', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.

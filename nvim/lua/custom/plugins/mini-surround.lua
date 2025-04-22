@@ -19,12 +19,30 @@ return {
   {
     'echasnovski/mini.sessions',
     version = false,
-    opts = { autoread = false },
+    opts = {
+      autoread = false,
+    },
     config = function(_, opts)
       require('mini.sessions').setup(opts)
+
+      vim.api.nvim_create_autocmd('VimLeavePre', {
+        group = vim.api.nvim_create_augroup('mini.sessions', { clear = true }),
+        callback = function()
+          if vim.bo.filetype == 'help' then
+            return
+          end
+          require('mini.sessions').write()
+        end,
+      })
     end,
     keys = {
-      { '<leader>S', '<cmd>mksession<cr>', desc = 'Saves current session' },
+      {
+        '<leader>S',
+        function()
+          require('mini.sessions').write()
+        end,
+        desc = '[S]ave session',
+      },
     },
   },
 }

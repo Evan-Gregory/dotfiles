@@ -50,7 +50,7 @@ return {
           },
         }
       )
-    end, { desc = 'Open Harpoon via Telescope' })
+    end, { desc = 'Search Harpoon' })
   end,
   keys = {
     {
@@ -67,55 +67,6 @@ return {
         harpoon.ui:toggle_quick_menu(harpoon:list(), { border = 'none' })
       end,
       desc = 'Harpoon quick menu',
-    },
-    --    {
-    --      '<leader>h1',
-    --      function()
-    --        require('harpoon'):list('task1'):select()
-    --      end,
-    --      desc = 'Harpoon to file 1',
-    --    },
-    --    {
-    --      '<leader>h2',
-    --      function()
-    --        require('harpoon'):list('task2'):select()
-    --      end,
-    --      desc = 'Harpoon to file 2',
-    --    },
-    {
-      '<leader>1',
-      function()
-        require('harpoon'):list():select(1)
-      end,
-      desc = 'Harpoon to file 1',
-    },
-    {
-      '<leader>2',
-      function()
-        require('harpoon'):list():select(2)
-      end,
-      desc = 'Harpoon to file 2',
-    },
-    {
-      '<leader>3',
-      function()
-        require('harpoon'):list():select(3)
-      end,
-      desc = 'Harpoon to file 3',
-    },
-    {
-      '<leader>4',
-      function()
-        require('harpoon'):list():select(4)
-      end,
-      desc = 'Harpoon to file 4',
-    },
-    {
-      '<leader>5',
-      function()
-        require('harpoon'):list():select(5)
-      end,
-      desc = 'Harpoon to file 5',
     },
   },
 }

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Set config paths
+config="$HOME/.config/hypr"
+scripts="$config/scripts"
+
+# Launch Waybar
+[ -x "$scripts/launch_waybar" ] && "$scripts/launch_waybar" &
+
+# Optional: dynamic script
+#[ -x "$scripts/tools/dynamic" ] && "$scripts/tools/dynamic" &
+
+# Set wallpaper
+"$scripts/wall" "$config/wallpapers/b.jpg" &
+
+# RGB effects
+nohup "$scripts/rgb" &
+
+# Notification daemon
+command -v dunst >/dev/null && nohup dunst >/dev/null 2>&1 &
+
+# PolicyKit agent
+if [ -x "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1" ]; then
+    nohup /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 >/dev/null 2>&1 &
+fi
+
+# DBus env setup
+nohup dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP >/dev/null 2>&1 &
+
+# Startup message
+notify-send -a aurora "hello $(whoami)"
+
