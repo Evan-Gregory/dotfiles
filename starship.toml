@@ -43,3 +43,7 @@ disabled = false
 [aws]
 format = "[]($style)[[☁ ](bg:#f9e2af fg:#49628a bold) on $profile ($region) $duration](bg:#f9e2af fg:#4c4f69)[ ]($style)"
 style = "fg:#f9e2af"
+
+[python]
+format = "[]($style)[[🐍 ](bg:#f9e2af fg:#49628a bold) $version](bg:#f9e2af fg:#4c4f69)[ ]($style)"
+style = "fg:#f9e2af"
