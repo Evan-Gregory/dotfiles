@@ -139,12 +139,14 @@ alias code='code-insiders'
 set MOZ_ENABLE_WAYLAND 1
 set XDG_CURRENT_DESKTOP sway
 
-alias awsltest='set -x AWS_PROFILE streametric-v2-test; aws sso login'
+alias awsltest='set -x AWS_PROFILE streametric-v2-test; export AWS_PROFILE="streametric-v2-prod"; aws sso login'
 alias awsldev='set -x AWS_PROFILE streametric-dev-v2; aws sso login'
 alias awslv1='set -x AWS_PROFILE streametric-v1; aws sso login'
-alias awslprod='set -x AWS_PROFILE streametric-v2-prod; aws sso login'
+alias awslprod='set -x AWS_PROFILE streametric-v2-prod; aws sso login; export AWS_PROFILE="streametric-v2-prod"'
+alias awslstg='set -x AWS_PROFILE streametric-staging; aws sso login; export AWS_PROFILE="streametric-staging"'
 
 alias nokvm='sudo rmmod kvm_amd'
+alias plskvm='sudo modprobe kvm_amd'
 
 alias vol='amixer' 
 alias volup='amixer set Master 5%+'
