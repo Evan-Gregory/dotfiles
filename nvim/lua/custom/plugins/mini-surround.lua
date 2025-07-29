@@ -1,4 +1,5 @@
 return {
+  { 'echasnovski/mini.icons' },
   {
     'echasnovski/mini.surround',
     opts = {
