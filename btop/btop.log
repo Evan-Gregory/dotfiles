@@ -1,0 +1,243 @@
+
+2025/05/15 (14:55:57) | ===> btop++ v.1.4.0
+2025/05/15 (14:55:57) | INFO: Logger set to DEBUG
+2025/05/15 (14:55:57) | DEBUG: Using locale en_US.UTF-8
+2025/05/15 (14:55:57) | INFO: Running on /dev/pts/3
+2025/05/15 (14:55:57) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/15 (14:55:57) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/15 (14:55:57) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/15 (14:55:57) | DEBUG: Shared::init() : Initialized.
+
+2025/05/15 (14:58:45) | ===> btop++ v.1.4.0
+2025/05/15 (14:58:45) | INFO: Logger set to DEBUG
+2025/05/15 (14:58:45) | DEBUG: Using locale en_US.UTF-8
+2025/05/15 (14:58:45) | INFO: Running on /dev/pts/3
+2025/05/15 (14:58:45) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/15 (14:58:45) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/15 (14:58:45) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/15 (14:58:45) | DEBUG: Shared::init() : Initialized.
+2025/05/15 (16:24:14) | DEBUG: Loading theme file: /usr/share/btop/themes/whiteout.theme
+2025/05/15 (16:24:14) | DEBUG: Loading theme file: /usr/share/btop/themes/tomorrow-night.theme
+2025/05/15 (16:24:15) | DEBUG: Loading theme file: /usr/share/btop/themes/tokyo-storm.theme
+2025/05/15 (16:24:15) | DEBUG: Loading theme file: /usr/share/btop/themes/tokyo-night.theme
+2025/05/15 (16:24:16) | DEBUG: Loading theme file: /usr/share/btop/themes/solarized_light.theme
+2025/05/15 (16:24:16) | DEBUG: Loading theme file: /usr/share/btop/themes/solarized_dark.theme
+2025/05/15 (16:24:16) | DEBUG: Loading theme file: /usr/share/btop/themes/phoenix-night.theme
+2025/05/15 (16:24:17) | DEBUG: Loading theme file: /usr/share/btop/themes/paper.theme
+2025/05/15 (16:24:17) | DEBUG: Loading theme file: /usr/share/btop/themes/onedark.theme
+2025/05/15 (16:24:17) | DEBUG: Loading theme file: /usr/share/btop/themes/nord.theme
+2025/05/15 (16:24:17) | DEBUG: Loading theme file: /usr/share/btop/themes/night-owl.theme
+2025/05/15 (16:24:18) | DEBUG: Loading theme file: /usr/share/btop/themes/monokai.theme
+2025/05/15 (16:24:18) | DEBUG: Loading theme file: /usr/share/btop/themes/matcha-dark-sea.theme
+2025/05/15 (16:24:19) | DEBUG: Loading theme file: /usr/share/btop/themes/kyli0x.theme
+2025/05/15 (16:24:19) | DEBUG: Loading theme file: /usr/share/btop/themes/horizon.theme
+2025/05/15 (16:24:20) | DEBUG: Loading theme file: /usr/share/btop/themes/gruvbox_material_dark.theme
+2025/05/15 (16:24:20) | DEBUG: Loading theme file: /usr/share/btop/themes/gruvbox_light.theme
+2025/05/15 (16:24:20) | DEBUG: Loading theme file: /usr/share/btop/themes/gruvbox_dark_v2.theme
+2025/05/15 (16:24:22) | DEBUG: Loading theme file: /usr/share/btop/themes/gruvbox_dark.theme
+2025/05/15 (16:24:22) | DEBUG: Loading theme file: /usr/share/btop/themes/greyscale.theme
+2025/05/15 (16:24:23) | DEBUG: Loading theme file: /usr/share/btop/themes/flat-remix.theme
+2025/05/15 (16:24:23) | DEBUG: Loading theme file: /usr/share/btop/themes/flat-remix-light.theme
+2025/05/15 (16:24:24) | DEBUG: Loading theme file: /usr/share/btop/themes/everforest-dark-medium.theme
+2025/05/15 (16:24:24) | DEBUG: Loading theme file: /usr/share/btop/themes/everforest-dark-hard.theme
+2025/05/15 (16:24:25) | DEBUG: Loading theme file: /usr/share/btop/themes/elementarish.theme
+2025/05/15 (16:24:25) | DEBUG: Loading theme file: /usr/share/btop/themes/dusklight.theme
+2025/05/15 (16:24:26) | DEBUG: Loading theme file: /usr/share/btop/themes/dracula.theme
+2025/05/15 (16:24:26) | DEBUG: Loading theme file: /usr/share/btop/themes/ayu.theme
+2025/05/15 (16:24:26) | DEBUG: Loading theme file: /usr/share/btop/themes/dracula.theme
+2025/05/15 (16:24:27) | DEBUG: Loading theme file: /usr/share/btop/themes/dracula.theme
+2025/05/15 (16:24:29) | DEBUG: Loading theme file: /usr/share/btop/themes/dracula.theme
+2025/05/15 (16:24:30) | DEBUG: Loading theme file: /usr/share/btop/themes/dracula.theme
+2025/05/15 (16:24:32) | DEBUG: Loading theme file: /usr/share/btop/themes/dracula.theme
+2025/05/15 (16:24:33) | DEBUG: Loading theme file: /usr/share/btop/themes/dracula.theme
+
+2025/05/19 (13:53:04) | ===> btop++ v.1.4.0
+2025/05/19 (13:53:04) | INFO: Logger set to DEBUG
+2025/05/19 (13:53:04) | DEBUG: Using locale en_US.UTF-8
+2025/05/19 (13:53:04) | INFO: Running on /dev/pts/5
+2025/05/19 (13:53:04) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/19 (13:53:04) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/19 (13:53:04) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/19 (13:53:04) | DEBUG: Shared::init() : Initialized.
+
+2025/05/19 (14:45:28) | ===> btop++ v.1.4.0
+2025/05/19 (14:45:28) | INFO: Logger set to DEBUG
+2025/05/19 (14:45:28) | DEBUG: Using locale en_US.UTF-8
+2025/05/19 (14:45:28) | INFO: Running on /dev/pts/4
+2025/05/19 (14:45:28) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/19 (14:45:28) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/19 (14:45:28) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/19 (14:45:28) | DEBUG: Shared::init() : Initialized.
+
+2025/05/21 (10:01:59) | ===> btop++ v.1.4.0
+2025/05/21 (10:01:59) | INFO: Logger set to DEBUG
+2025/05/21 (10:01:59) | DEBUG: Using locale en_US.UTF-8
+2025/05/21 (10:01:59) | INFO: Running on /dev/pts/6
+2025/05/21 (10:01:59) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/21 (10:01:59) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/21 (10:01:59) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/21 (10:01:59) | DEBUG: Shared::init() : Initialized.
+
+2025/05/21 (10:02:17) | ===> btop++ v.1.4.0
+2025/05/21 (10:02:17) | INFO: Logger set to DEBUG
+2025/05/21 (10:02:17) | DEBUG: Using locale en_US.UTF-8
+2025/05/21 (10:02:17) | INFO: Running on /dev/pts/3
+2025/05/21 (10:02:17) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/21 (10:02:17) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/21 (10:02:17) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/21 (10:02:17) | DEBUG: Shared::init() : Initialized.
+
+2025/05/23 (16:03:23) | ===> btop++ v.1.4.0
+2025/05/23 (16:03:23) | INFO: Logger set to DEBUG
+2025/05/23 (16:03:23) | DEBUG: Using locale en_US.UTF-8
+2025/05/23 (16:03:23) | INFO: Running on /dev/pts/5
+2025/05/23 (16:03:23) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/23 (16:03:23) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/23 (16:03:23) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/23 (16:03:23) | DEBUG: Shared::init() : Initialized.
+
+2025/05/26 (22:42:31) | ===> btop++ v.1.4.0
+2025/05/26 (22:42:31) | INFO: Logger set to DEBUG
+2025/05/26 (22:42:31) | DEBUG: Using locale en_US.UTF-8
+2025/05/26 (22:42:31) | INFO: Running on /dev/pts/10
+2025/05/26 (22:42:31) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/26 (22:42:31) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/26 (22:42:31) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/26 (22:42:31) | DEBUG: Shared::init() : Initialized.
+
+2025/05/27 (15:45:47) | ===> btop++ v.1.4.0
+2025/05/27 (15:45:47) | INFO: Logger set to DEBUG
+2025/05/27 (15:45:47) | DEBUG: Using locale en_US.UTF-8
+2025/05/27 (15:45:47) | INFO: Running on /dev/pts/2
+2025/05/27 (15:45:47) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/27 (15:45:47) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/27 (15:45:47) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/27 (15:45:47) | DEBUG: Shared::init() : Initialized.
+
+2025/05/29 (11:05:02) | ===> btop++ v.1.4.0
+2025/05/29 (11:05:02) | INFO: Logger set to DEBUG
+2025/05/29 (11:05:02) | DEBUG: Using locale en_US.UTF-8
+2025/05/29 (11:05:02) | INFO: Running on /dev/pts/3
+2025/05/29 (11:05:02) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/29 (11:05:02) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/29 (11:05:02) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/29 (11:05:02) | DEBUG: Shared::init() : Initialized.
+
+2025/05/29 (11:05:09) | ===> btop++ v.1.4.0
+2025/05/29 (11:05:09) | INFO: Logger set to DEBUG
+2025/05/29 (11:05:09) | DEBUG: Using locale en_US.UTF-8
+2025/05/29 (11:05:09) | INFO: Running on /dev/pts/4
+2025/05/29 (11:05:09) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/05/29 (11:05:09) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/05/29 (11:05:09) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/05/29 (11:05:09) | DEBUG: Shared::init() : Initialized.
+
+2025/06/03 (14:55:32) | ===> btop++ v.1.4.0
+2025/06/03 (14:55:32) | INFO: Logger set to DEBUG
+2025/06/03 (14:55:32) | DEBUG: Using locale en_US.UTF-8
+2025/06/03 (14:55:32) | INFO: Running on /dev/pts/3
+2025/06/03 (14:55:32) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/06/03 (14:55:32) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/06/03 (14:55:32) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/06/03 (14:55:32) | DEBUG: Shared::init() : Initialized.
+
+2025/06/08 (16:11:43) | ===> btop++ v.1.4.0
+2025/06/08 (16:11:43) | INFO: Logger set to DEBUG
+2025/06/08 (16:11:43) | DEBUG: Using locale en_US.UTF-8
+2025/06/08 (16:11:43) | INFO: Running on /dev/pts/3
+2025/06/08 (16:11:43) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/06/08 (16:11:43) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/06/08 (16:11:43) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/06/08 (16:11:43) | DEBUG: Shared::init() : Initialized.
+
+2025/06/09 (08:00:33) | ===> btop++ v.1.4.0
+2025/06/09 (08:00:33) | INFO: Logger set to DEBUG
+2025/06/09 (08:00:33) | DEBUG: Using locale en_US.UTF-8
+2025/06/09 (08:00:33) | INFO: Running on /dev/pts/2
+2025/06/09 (08:00:33) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/06/09 (08:00:33) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/06/09 (08:00:33) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/06/09 (08:00:33) | DEBUG: Shared::init() : Initialized.
+
+2025/06/09 (08:41:30) | ===> btop++ v.1.4.0
+2025/06/09 (08:41:30) | INFO: Logger set to DEBUG
+2025/06/09 (08:41:30) | DEBUG: Using locale en_US.UTF-8
+2025/06/09 (08:41:30) | INFO: Running on /dev/pts/3
+2025/06/09 (08:41:30) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/06/09 (08:41:30) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/06/09 (08:41:30) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/06/09 (08:41:30) | DEBUG: Shared::init() : Initialized.
+
+2025/06/09 (09:36:10) | ===> btop++ v.1.4.0
+2025/06/09 (09:36:10) | INFO: Logger set to DEBUG
+2025/06/09 (09:36:10) | DEBUG: Using locale en_US.UTF-8
+2025/06/09 (09:36:10) | INFO: Running on /dev/pts/1
+2025/06/09 (09:36:10) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/06/09 (09:36:10) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/06/09 (09:36:10) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/06/09 (09:36:10) | DEBUG: Shared::init() : Initialized.
+
+2025/06/09 (13:43:40) | ===> btop++ v.1.4.0
+2025/06/09 (13:43:40) | INFO: Logger set to DEBUG
+2025/06/09 (13:43:40) | DEBUG: Using locale en_US.UTF-8
+2025/06/09 (13:43:40) | INFO: Running on /dev/pts/1
+2025/06/09 (13:43:40) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/06/09 (13:43:40) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/06/09 (13:43:40) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/06/09 (13:43:40) | DEBUG: Shared::init() : Initialized.
+
+2025/06/30 (13:07:18) | ===> btop++ v.1.4.0
+2025/06/30 (13:07:18) | INFO: Logger set to DEBUG
+2025/06/30 (13:07:18) | DEBUG: Using locale en_US.UTF-8
+2025/06/30 (13:07:18) | INFO: Running on /dev/pts/2
+2025/06/30 (13:07:18) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/06/30 (13:07:18) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/06/30 (13:07:18) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/06/30 (13:07:18) | DEBUG: Shared::init() : Initialized.
+
+2025/07/01 (15:03:16) | ===> btop++ v.1.4.0
+2025/07/01 (15:03:16) | INFO: Logger set to DEBUG
+2025/07/01 (15:03:16) | DEBUG: Using locale en_US.UTF-8
+2025/07/01 (15:03:16) | INFO: Running on /dev/pts/5
+2025/07/01 (15:03:16) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/07/01 (15:03:16) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/07/01 (15:03:16) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/07/01 (15:03:16) | DEBUG: Shared::init() : Initialized.
+
+2025/07/02 (11:17:24) | ===> btop++ v.1.4.0
+2025/07/02 (11:17:24) | INFO: Logger set to DEBUG
+2025/07/02 (11:17:24) | DEBUG: Using locale en_US.UTF-8
+2025/07/02 (11:17:24) | INFO: Running on /dev/pts/1
+2025/07/02 (11:17:24) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/07/02 (11:17:24) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/07/02 (11:17:24) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/07/02 (11:17:24) | DEBUG: Shared::init() : Initialized.
+
+2025/07/02 (11:45:54) | ===> btop++ v.1.4.0
+2025/07/02 (11:45:54) | INFO: Logger set to DEBUG
+2025/07/02 (11:45:54) | DEBUG: Using locale en_US.UTF-8
+2025/07/02 (11:45:54) | INFO: Running on /dev/pts/1
+2025/07/02 (11:45:54) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/07/02 (11:45:54) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/07/02 (11:45:54) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/07/02 (11:45:54) | DEBUG: Shared::init() : Initialized.
+
+2025/07/23 (14:42:49) | ===> btop++ v.1.4.0
+2025/07/23 (14:42:49) | INFO: Logger set to DEBUG
+2025/07/23 (14:42:49) | DEBUG: Using locale en_US.UTF-8
+2025/07/23 (14:42:49) | INFO: Running on /dev/pts/5
+2025/07/23 (14:42:49) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/07/23 (14:42:49) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/07/23 (14:42:49) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/07/23 (14:42:49) | DEBUG: Shared::init() : Initialized.
+2025/07/23 (14:56:49) | ERROR: Stall in Runner thread, restarting!
+2025/07/23 (15:02:25) | ERROR: Stall in Runner thread, restarting!
+
+2025/07/23 (15:23:45) | ===> btop++ v.1.4.0
+2025/07/23 (15:23:45) | INFO: Logger set to DEBUG
+2025/07/23 (15:23:45) | DEBUG: Using locale en_US.UTF-8
+2025/07/23 (15:23:45) | INFO: Running on /dev/pts/3
+2025/07/23 (15:23:45) | INFO: Failed to load libnvidia-ml.so, NVIDIA GPUs will not be detected: libnvidia-ml.so.1: cannot open shared object file: No such file or directory
+2025/07/23 (15:23:45) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/07/23 (15:23:45) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/07/23 (15:23:45) | DEBUG: Shared::init() : Initialized.
