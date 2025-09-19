@@ -12,6 +12,15 @@ if type -q tmux
         ; or tmux new -s default
     end
 end
+# Start Hyprland automatically when this is a *login* shell on tty1.
+if status is-login
+    if test (tty) = "/dev/tty1"
+        # Avoid starting inside an existing Wayland/X11 session
+        if not set -q WAYLAND_DISPLAY; and not set -q DISPLAY
+            exec Hyprland
+        end
+    end
+end
 set -l teal 94e2d5
 set -l flamingo f2cdcd
 set -l mauve cba6f7
