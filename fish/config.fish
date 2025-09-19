@@ -6,6 +6,12 @@ if status is-interactive
 	~/.config/fish/tty.sh &
 end
 
+# Start a tmux session if not already inside one
+if type -q tmux 
+    if not set -q TMUX
+        ; or tmux new -s default
+    end
+end
 set -l teal 94e2d5
 set -l flamingo f2cdcd
 set -l mauve cba6f7
