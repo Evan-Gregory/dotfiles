@@ -1,12 +1,12 @@
---return {
---  'stevearc/oil.nvim',
---  opts = {},
---  dependencies = { 'nvim-tree/nvim-web-devicons' },
---  keys = {
---    { '<leader>o', '<cmd>Oil<cr>', desc = 'Pulls up Oil' },
---  },
---}
 return {
+  {
+    'stevearc/oil.nvim',
+    opts = {},
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    keys = {
+      { '<leader>-', '<cmd>Oil<cr>', desc = '[-] Oil' },
+    },
+  },
   -- If you want neo-tree's file operations to work with LSP (updating imports, etc.), you can use a plugin like
   -- https://github.com/antosha417/nvim-lsp-file-operations:
   {
@@ -49,10 +49,11 @@ return {
     },
     config = function()
       -- If you want icons for diagnostic errors, you'll need to define them somewhere:
-      vim.fn.sign_define('DiagnosticSignError', { text = ' ', texthl = 'DiagnosticSignError' })
-      vim.fn.sign_define('DiagnosticSignWarn', { text = ' ', texthl = 'DiagnosticSignWarn' })
-      vim.fn.sign_define('DiagnosticSignInfo', { text = ' ', texthl = 'DiagnosticSignInfo' })
-      vim.fn.sign_define('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
+      -- TODO: Fix these
+      -- vim.diagnostic.config('DiagnosticSignError', { text = ' ', texthl = 'DiagnosticSignError' })
+      -- vim.diagnostic.config('DiagnosticSignWarn', { text = ' ', texthl = 'DiagnosticSignWarn' })
+      -- vim.diagnostic.config('DiagnosticSignInfo', { text = ' ', texthl = 'DiagnosticSignInfo' })
+      -- vim.diagnostic.config('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
 
       require('neo-tree').setup {
         close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
