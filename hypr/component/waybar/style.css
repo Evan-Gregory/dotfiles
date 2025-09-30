@@ -1,6 +1,6 @@
 * {
     font-family: FiraCode , Noto Sans,FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 #clock,
@@ -9,6 +9,7 @@
 #memory,
 #disk,
 #temperature,
+#workspaces,
 #backlight,
 #network,
 #pulseaudio,
@@ -26,13 +27,17 @@
     background: #11111b;
     color: #b4befe;
     box-shadow: rgba(0, 0, 0, 0.116) 2 2 5 2px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-right: 10px;
 }
 
 window#waybar {
-    background-color: transparent;
+    background-color: rgba(43, 48, 59, 0.2);
+    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
+    color: #ffffff;
+    transition-property: transparent;
+    transition-duration: .5s;
+}
+window#waybar.hidden {
+    opacity: 0.2;
 }
 
 #custom-dynamic_pill label {
@@ -43,48 +48,6 @@ window#waybar {
 #custom-dynamic_pill.paused label {
     color: 	#89b4fa ;
     font-weight: bolder; 
-}
-
-#workspaces button label{
-    color: 	#89b4fa ;
-    font-weight: bolder;
-}
-
-#workspaces button.active label{
-    color: #11111b;
-    font-weight: bolder;
-}
-
-#workspaces{
-    background-color: transparent;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-right: 10px;
-    margin-left: 25px;
-}
-#workspaces button{
-    box-shadow: rgba(0, 0, 0, 0.116) 2 2 5 2px;
-    background-color: #11111b ;
-    border-radius: 15px;
-    margin-right: 10px;
-    padding: 10px;
-    padding-top: 4px;
-    padding-bottom: 2px;
-    font-weight: bolder;
-    color: 	#89b4fa ;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
-}
-
-#workspaces button.active{
-    padding-right: 20px;
-    box-shadow: rgba(0, 0, 0, 0.288) 2 2 5 2px;
-    padding-left: 20px;
-    padding-bottom: 3px;
-    background: rgb(203,166,247);
-    background: radial-gradient(circle, rgba(203,166,247,1) 0%, rgba(193,168,247,1) 12%, rgba(249,226,175,1) 19%, rgba(189,169,247,1) 20%, rgba(182,171,247,1) 24%, rgba(198,255,194,1) 36%, rgba(177,172,247,1) 37%, rgba(170,173,248,1) 48%, rgba(255,255,255,1) 52%, rgba(166,174,248,1) 52%, rgba(160,175,248,1) 59%, rgba(148,226,213,1) 66%, rgba(155,176,248,1) 67%, rgba(152,177,248,1) 68%, rgba(205,214,244,1) 77%, rgba(148,178,249,1) 78%, rgba(144,179,250,1) 82%, rgba(180,190,254,1) 83%, rgba(141,179,250,1) 90%, rgba(137,180,250,1) 100%); 
-    background-size: 400% 400%;
-    animation: gradient_f 20s ease-in-out infinite;
-    transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }
 
 @keyframes gradient {
@@ -194,15 +157,10 @@ window#waybar {
 
 #clock {
     background: rgb(205,214,244);
-    background: linear-gradient(118deg, rgba(205,214,244,1) 5%, rgba(243,139,168,1) 5%, rgba(243,139,168,1) 20%, rgba(205,214,244,1) 20%, rgba(205,214,244,1) 40%, rgba(243,139,168,1) 40%, rgba(243,139,168,1) 60%, rgba(205,214,244,1) 60%, rgba(205,214,244,1) 80%, rgba(243,139,168,1) 80%, rgba(243,139,168,1) 95%, rgba(205,214,244,1) 95%); 
-
     background-size: 200% 300%;
-
-    animation: gradient_f_nh 8s linear infinite;
     margin-right: 25px;
     color: #fff ;
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.377);
-    
     font-size: 15px;
     padding-top: 5px;
     padding-right: 21px;
@@ -249,7 +207,6 @@ window#waybar {
 
 #cpu {
     background: rgb(30,30,46);
-    background: radial-gradient(circle, rgba(30,30,46,1) 30%, rgba(17,17,27,1) 100%); 
     color: 	#89b4fa;
 }
 
@@ -280,7 +237,7 @@ window#waybar {
     background: linear-gradient(45deg, rgba(243,139,168,1) 0%, rgba(250,179,135,1) 100%); 
     color: #fff;
     font-weight: bolder;
-    padding-top: 3px;
+    padding-top: 0px;
     padding-right: 11px;
 }
 
@@ -294,7 +251,7 @@ window#waybar {
 
 #pulseaudio {
     background-color:  	#fab387;
-    color: #bf7d54;
+    color: #444552;
     font-weight: bolder;
 }
 
@@ -337,3 +294,62 @@ window#waybar {
     background-color: #eb4d4b;
 }
 
+/* --- Waybar Taskbar Styles --- */
+button {
+    /* Use box-shadow instead of border so the text isn't offset */
+    box-shadow: inset 0 -3px transparent;
+    /* Avoid rounded borders under each button name */
+    border: none;
+    border-radius: 0;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+button:hover {
+    background: transparent;
+    box-shadow: inset 0 -3px rgba(0, 0, 0, 0.116);
+}
+/* Style the taskbar container similar to workspaces */
+#workspaces {
+    background-color: transparent;
+    margin-top: 0px;
+    margin-bottom: 4px;
+}
+
+
+/* Base style for each window icon button */
+#workspaces button {
+    background-color: #89b4fa;              /* same dark background as other modules */
+    padding: 0px 5px;                /* adjust padding (vertical, horizontal) */
+    border-radius: 0;              /* rounded corners */
+    margin: 0 1px;                    /* spacing between icons */
+    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
+    /*cursor: pointer;*/                  /* show hand cursor on hover */
+}
+
+/* Active window icon (focused window) */
+#workspaces button.active {
+    /* Use a gradient background similar to the active workspace style */
+    background: radial-gradient(circle, rgba(203,166,247,1) 0%, rgba(170,173,248,1) 50%, rgba(137,180,250,1) 100%);
+    animation: gradient_f 30s ease-in-out infinite;  /* reuse your gradient animation if defined */
+}
+
+#workspaces button:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+#workspaces button label{
+    color: 	#444552 ;
+    font-weight: bolder;
+}
+#workspaces button.active label{
+    color: #444552;
+    font-weight: bolder;
+}
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left > widget:first-child > #workspaces {
+    margin-left: 0;
+}
+
+/* If workspaces is the rightmost module, omit right margin */
+.modules-right > widget:last-child > #workspaces {
+    margin-right: 0;
+}
