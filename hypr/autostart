@@ -1,32 +1,77 @@
-#!/usr/bin/env bash
+#!/usr/bin/env fish
+# --- logging ---
+set -l LOG ~/.local/state/hypr/autostart.log
+mkdir -p (dirname $LOG)
+echo (date --iso-8601=seconds)"  autostart begin" >> $LOG
 
-# Set config paths
-config="$HOME/.config/hypr"
-scripts="$config/scripts"
+# --- environment (Wayland apps) ---
+set -gx XDG_CURRENT_DESKTOP Hyprland
+set -gx XDG_SESSION_TYPE wayland
+set -gx MOZ_ENABLE_WAYLAND 1
 
-# Launch Waybar
-[ -x "$scripts/launch_waybar" ] && "$scripts/launch_waybar" &
+# --- paths ---
+set -l CONFIG $HOME/dotfiles/hypr
+set -l SCRIPTS_DIR $CONFIG/scripts
 
-# Optional: dynamic script
-#[ -x "$scripts/tools/dynamic" ] && "$scripts/tools/dynamic" &
+$SCRIPTS_DIR/journal.sh
+# --- Waybar ---
+if type -q waybar
+    if test -x $SCRIPTS_DIR/launch_waybar
+        nohup $SCRIPTS_DIR/launch_waybar >> $LOG 2>&1 &
+    else
+        nohup waybar >> $LOG 2>&1 &
+    end
+end
 
-# Set wallpaper
-"$scripts/wall" "$config/wallpapers/b.jpg" &
+# --- Wallpaper (ensure your script exists / is executable) ---
+if test -x $SCRIPTS_DIR/wall
+    nohup $SCRIPTS_DIR/wall $CONFIG/wallpapers/dark_dwagon.png >> $LOG 2>&1 &
+else if type -q swww
+    # optional fallback using swww
+    swww init >> $LOG 2>&1
+    swww img $CONFIG/wallpapers/dark_dwagon.png >> $LOG 2>&1 &
+end
 
-# RGB effects
-nohup "$scripts/rgb" &
+# --- RGB effects ---
+if test -x $SCRIPTS_DIR/rgb
+    nohup $SCRIPTS_DIR/rgb >> $LOG 2>&1 &
+end
 
-# Notification daemon
-command -v dunst >/dev/null && nohup dunst >/dev/null 2>&1 &
+# --- Tmux Sessions ---
+set SESSION "default"
+tmux has-session -t $SESSION 2>/dev/null
+if test $status -eq 0
+    exit 0
+end
+tmux new-session -d -s $SESSION -n JOURNAL
+tmux new-window -t $SESSION:2 -n TERMINAL
+tmux new-window -t $SESSION:3 -n DOTS
+tmux new-window -t $SESSION:4 -n BTOP
 
-# PolicyKit agent
-if [ -x "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1" ]; then
-    nohup /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 >/dev/null 2>&1 &
-fi
 
-# DBus env setup
-nohup dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP >/dev/null 2>&1 &
+tmux send-keys -t $SESSION:JOURNAL "nvim $JOURNAL_FILE" C-m
+tmux send-keys -t $SESSION:DOTS 'cd ~/dotfiles' C-m
 
-# Startup message
-notify-send -a aurora "hello $(whoami)"
+# BTOP
+tmux send-keys -t $SESSION:BTOP 'btop' C-m
+
+# --- Notifications ---
+if type -q dunst
+    nohup dunst >> $LOG 2>&1 &
+end
+
+# --- PolicyKit agent ---
+if test -x /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+    nohup /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 >> $LOG 2>&1 &
+end
+
+# --- DBus env (so apps launched later inherit vars) ---
+nohup dbus-update-activation-environment --systemd --all >> $LOG 2>&1 &
+
+# --- Hello toast ---
+if type -q notify-send
+    notify-send -a aurora "hello "(whoami)
+end
+
+echo (date --iso-8601=seconds)"  autostart end" >> $LOG
 
