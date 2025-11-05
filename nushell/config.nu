@@ -7,11 +7,33 @@ carapace _carapace nushell | save --force ~/.cache/carapace/init.nu
 #~/.config/nushell/config.nu
 source ~/.cache/carapace/init.nu
 
-$env.config.show_banner = true
 
-# Starship Setup --
-mkdir ($nu.data-dir | path join "vendor/autoload")
-starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
+if $nu.is-interactive {
+    # Commands to run in interactive sessions can go here
+	pokemon-colorscripts -r --no-title 
+        #thefuck --alias 
+
+        # Starship Setup --
+        mkdir ($nu.data-dir | path join "vendor/autoload")
+        starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
+
+	~/.config/fish/tty.sh 
+} else {}
+
+if ($nu.is-login
+    and (tty) == "/dev/tty1" 
+    and ( $env.WAYLAND_DISPLAY? | is-empty ) 
+    and ( $env.DISPLAY? | is-empty ) ) {
+    exec hyprland
+}
+
+#if $nu.is-login {
+#    if 
+#}
+#
+$env.config.show_banner = false
+$env.SUDO_EDITOR = "nvim"
+
 
 # EXTERNAL COMPLETIONS --
 let fish_completer = {|spans|
@@ -73,8 +95,9 @@ $env.config.completions = {
 $env.config.buffer_editor = 'nvim' 
 
 def --env 'login aws' [] {
-$env.AWS_PROFILE = (aws configure list-profiles | fzf)
-aws sso login
+    $env.AWS_PROFILE = (aws configure list-profiles | fzf)
+    flatpak run com.vivaldi.Vivaldi
+    aws sso login
 }
 
 # Allows for replicating process substituion.
@@ -93,28 +116,32 @@ export def "as file" [] {
 
 
 # THEME --
-$env.config.table.mode = 'compact'
 $env.LS_COLORS = "di=1;34:*.nu=3;33;46"
+$env.config.table.mode = 'compact'
 # # Example color config from [ nushell coloring guide ](https://www.nushell.sh/book/coloring_and_theming.html#special-primitives-not-really-primitives-but-they-exist-solely-for-coloring)
 #>$env.config.color_config.header = { # this is like PR #489
 #>    fg: "#B01455", # note, quotes are required on the values with hex colors
 #>    bg: "#ffb900", # note, commas are not required, it could also be all on one line
 #>    attr: bli # note, there are no quotes around this value. it works with or without quotes
 #>}
-$env.config.color_config.separator = 'purple'
-$env.config.color_config.leading_trailing_space_bg = "#ffffff"
-$env.config.color_config.header = 'gb'
-$env.config.color_config.date = 'wd'
-$env.config.color_config.filesize = 'c'
-$env.config.color_config.row_index = 'cb'
-$env.config.color_config.bool = 'red'
-$env.config.color_config.int = 'green'
-$env.config.color_config.duration = 'blue_bold'
-$env.config.color_config.range = 'purple'
-$env.config.color_config.float = 'red'
-$env.config.color_config.string = 'white'
-$env.config.color_config.nothing = 'red'
-$env.config.color_config.binary = 'red'
-$env.config.color_config.cellpath = 'cyan'
-$env.config.color_config.hints = 'lyd'
-$env.config.color_config.shapes_garbage = 'red'
+$env.config.color_config = {
+    separator : 'purple',
+    leading_trailing_space_bg: "#ffffff",
+    header: 'gb',
+    date: 'wd',
+    filesize: 'c',
+    row_index: 'cb',
+    bool: 'red',
+    int: 'green',
+    duration: 'blue_bold',
+    range: 'purple',
+    float: 'red',
+    string: 'white',
+    nothing: 'red',
+    binary: 'red',
+    cellpath: 'cyan',
+    hints: 'lyd',
+    shapes_garbage: 'red',
+}
+
+alias please = sudo
