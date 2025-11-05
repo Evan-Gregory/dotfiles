@@ -113,8 +113,11 @@ vim.keymap.set({ 'n', 'v' }, '<leader>p', '"0p', { desc = '[p]aste from system c
 vim.keymap.set({ 'n', 'v' }, '<leader>P', '"0P', { desc = '[P]aste from system clipboard <-' })
 
 -- TODO: make this toggle-able
-vim.keymap.set('n', '<leader>ms', '<cmd>setlocal spell spelllang=en<cr>', { desc = '[s] Toggle spell check' })
-vim.keymap.set('n', '<leader>mS', '<cmd>setlocal spell spelllang=<cr>', { desc = '[s] Toggle spell check' })
+vim.keymap.set('n', '<leader>S', '<cmd>setlocal spell spelllang=<cr>', { desc = '[s] Toggle spell check' })
+vim.keymap.set('n', '<leader>S', function()
+  vim.wo.spell = not vim.wo.spell
+  vim.cmd 'redraw'
+end, { desc = '[s] Toggle spell check' })
 
 vim.api.nvim_create_autocmd('VimEnter', {
   desc = 'Sets colorcolumn on line 80',
