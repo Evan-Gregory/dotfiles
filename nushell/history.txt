@@ -1,0 +1,169 @@
+ls
+cd
+ls
+cd nvim
+ls
+nvim init.lua
+ls
+mkdir lua
+cd lua
+mkdir plugins
+cd plugins
+nvim oil.lua
+cd ..
+touch autocmds.lua
+touch options.lua
+nvim options.lua
+cd ..
+ls
+nvim init.lua
+cd lua/
+ls
+cd plugins/
+ls
+nvim oil
+nvim oil.lua
+cd ../..
+ls
+nvim init.lua
+cd lua/plugins/
+nvim oil.lua
+cd ../..
+ls
+nvim init.lua
+cd lua
+nvim keymaps.lua
+ls
+nvim keymaps.lua
+nvim --help
+nvim -u ~/.config/nvim/init.lua
+nvim init.lua
+ls
+nvim keymaps.lua
+nvim plugins/oil.lua
+cd ..
+ls
+cd nvim
+nvim init.lua
+cd lua/
+nvim options.lua
+ls
+ls -a
+cd .config/
+ls
+cd hypr/
+ls
+nvim hyprland.confl
+nvim hyprland.conf
+ls
+cd ..
+ls
+keyd 
+which keyd
+where keyd
+whereis keyd
+cd /etc/keyd/
+ls
+nvim default.conf
+cd ~/.config/
+cd hypr/
+nvim
+ls
+nvim hyprland.conf
+hyprctl monitors all
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+cd /etc/keyd/
+nvim default.conf
+sudo nvim default.conf
+keyd 
+sudo keyd
+sudo systemctl disable --now keyd
+nvim default.conf
+sudo nvim default.conf
+cd ~/.config/hypr/
+ls
+nvim hyprland.conf
+hyprctl monitors all
+nvim hyprland.conf
+hyprctl monitors all
+hyprctl reload
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+hyprctl reload
+ls
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+cd ../
+ls
+cd nvim
+nvim init.lua
+ls
+cd lua
+nvim autocmds.lua
+nvim keymaps.lua
+nvim options.lua
+cd plugins/
+nvim oil.lua
+nvim colorscheme.lua
+cd ../..
+ls
+nvim init.lua
+cd /usr/share/hypr/
+sudo nvim hyprland.conf
+cd ~/.config/hypr/
+nvim hyprland.conf
+cd /usr/share/hypr/
+sudo nvim hyprland.conf
+cd ~/.config/hypr/
+nvim hyprland.conf
+ls -s ~/.config/hypr/hyprland.conf /usr/share/hypr/hyprland.conf
+sudo nvim hyprland.conf
+hyprctl reload
+ln -s ~/.config/hypr/hyprland.conf /usr/share/hypr/hyprland.conf
+rm /usr/share/hypr/hyprland.conf
+sudo rm /usr/share/hypr/hyprland.conf
+ln -s ~/.config/hypr/hyprland.conf /usr/share/hypr/hyprland.conf
+sudo ln -s ~/.config/hypr/hyprland.conf /usr/share/hypr/hyprland.conf
+hyprctl reload
+ls
+nvim hyprland.conf
+cd ../nvim
+ls
+nvim init.lua
+cd ../hypr/
+nvim hyprland.conf
+hyprctl reload
+nvim hyprland.conf
+cd ..
+ls
+cd ..
+ls
+sudo pacman -S lazygit
+ls
+mkdir dotfiles
+ls .config/
+cp .config/nvim dotfiles/
+cp .config/nvim dotfiles/ -r
+ls dotfiles/
+cp .config/hypr/ dotfiles/
+cp .config/hypr/ dotfiles/ -r
+ls .config/
+cp .config/kitty/ dotfiles/ -r
