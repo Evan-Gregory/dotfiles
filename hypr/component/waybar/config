@@ -5,9 +5,11 @@
     // "width": 1280, // Waybar width
     "spacing": 4, // Gaps between modules (4px)
     // Choose the order of the modules
-    "modules-left": ["hyprland/workspaces","custom/waybarthemes"],
-    "modules-center": ["hyprland/window"],
-    "modules-right": ["mpd",  "pulseaudio", "network", "cpu", "memory", "temperature", "backlight",  "battery", "clock"],
+    "modules-left": ["custom/appmenu", "hyprland/workspaces", "custom/empty"],
+    // "custom/waybarthemes",
+    "modules-center": ["hyprland/window", "custom/empty"],
+    "modules-right": ["mpd", "idle_inhibitor", "pulseaudio", "network", "cpu", "memory", "temperature",  "keyboard-state", "sway/language", "battery", "battery#bat2", "clock", ],
+    // "custom/ml4w-welcome","backlight","tray"
 
   "hyprland/window": {
     "max-length": 60,
@@ -20,6 +22,57 @@
     },
     "separate-outputs": true
   },
+  // Rofi Application Launcher
+  "custom/appmenu": {
+    // START APPS LABEL
+    "format": "Apps",
+    // END APPS LABEL
+    "on-click": "sleep 0.2;pkill wofi || wofi wofi --show drun -o DP-3",
+    "on-click-right": "~/.config/hypr/scripts/keybindings.sh",
+    "tooltip-format": "Left: Open the application launcher\nRight: Show all keybindings"
+  },
+  // Rofi Application Launcher
+  "custom/appmenuicon": {
+    "format": "",
+    "on-click": "sleep 0.2;rofi -show drun -replace",
+    "on-click-right": "~/.config/hypr/scripts/keybindings.sh",
+    "tooltip-format": "Left: Open the application launcher\nRight: Show all keybindings"
+  },
+  // Power Menu
+  "custom/exit": {
+    "format": "",
+    "on-click": "~/.config/ml4w/scripts/wlogout.sh",
+    "on-click-right": "hyprlock",
+    "tooltip-format": "Left: Power menu\nRight: Lock screen"
+  },
+  // SwayNC
+  "custom/notification": {
+    "tooltip-format": "Left: Notifications\nRight: Do not disturb",
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "notifications_active",
+      "none": "notifications",
+      "dnd-notification": "notifications_active",
+      "dnd-none": "notifications_paused",
+      "inhibited-notification": "notification_important",
+      "inhibited-none": "notification_important",
+      "dnd-inhibited-notification": "notification_off",
+      "dnd-inhibited-none": "notifications_off"
+    },
+    "return-type": "json",
+    "exec-if": "which swaync-client",
+    "exec": "swaync-client -swb",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "swaync-client -d -sw",
+    "escape": true
+  },
+  // Hyprshade
+  "custom/hyprshade": {
+    "format": "",
+    "tooltip-format": "Toggle Screen Shader",
+    "on-click": "sleep 0.5; ~/.config/hypr/scripts/hyprshade.sh",
+    "on-click-right": "sleep 0.5; ~/.config/hypr/scripts/hyprshade.sh rofi"
+  },
     "custom/dynamic_pill": {
         "return-type": "json",
         "exec": "~/.config/hypr/scripts/tools/start_dyn",
@@ -30,7 +83,7 @@
         "exec":"~/.config/hypr/scripts/tools/expand ss-icon",
         "on-click": "~/.config/hypr/scripts/screenshot_full"
     },
-    "custom/cycle_wall":{
+    "custom/wallpaper":{
         "format":"{}",
         "exec": "~/.config/hypr/scripts/tools/expand wall",
         // "interval": 1,
@@ -50,37 +103,41 @@
             "unlocked": ""
         }
     },
-      "pulseaudio": {
-           "format": "{volume}% {icon}",
-           "format-bluetooth": "{volume}% {icon}",
-           "format-muted": "",
-           "format-icons": {
-                "alsa_output.pci-0000_00_1f.3.analog-stereo": "",
-                "headphones": "",
-                "handsfree": "",
-                "headset": "",
-                "phone": "",
-                "portable": "",
-                "car": "",
-                "default": ["", ""]
-           },
-           "scroll-step": 1,
-           "on-click": "pavucontrol"
-      },
+  // Pulseaudio
+  "pulseaudio": {
+    // "scroll-step": 1, // %, can be a float
+    "format": "{icon}  {volume}%",
+    "format-bluetooth": "{volume}% {icon} {format_source}",
+    "format-bluetooth-muted": " {icon} {format_source}",
+    "format-muted": " {format_source}",
+    "format-source": "{volume}% ",
+    "format-source-muted": "",
+    "format-icons": {
+      "headphone": " ",
+      "hands-free": " ",
+      "headset": " ",
+      "phone": " ",
+      "portable": " ",
+      "car": " ",
+      "default": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "on-click": "pavucontrol"
+  },
       "hyprland/workspaces": {
       "format": "{}",
       "format-icons": {
           "1": "",
           "2": "",
           "3": "",
-	  "active": "󱇬", // Active workspace icon
+	  "default": "",
       },
       "persistent_workspaces": {
-           "1": [],
-           "2": [],
-           "3": [],
+           "*": 5,
       },
-      
   },
 
   "wlr/taskbar": {
@@ -112,7 +169,7 @@
         }
     },
     "tray": {
-        // "icon-size": 21,
+        "icon-size": 21,
         "spacing": 10
     },
     "clock": {
@@ -155,15 +212,20 @@
     "battery#bat2": {
         "bat": "BAT2"
     },
-    "network": {
-        // "interface": "wlp2*", // (Optional) To force the use of this interface
-        "format-wifi": "",
-        "format-ethernet": "",
-        "tooltip-format": "via {gwaddr} {ifname}",
-        "format-linked": "",
-        "format-disconnected": "wifi",
-        "format-alt": "   "
-    },
+  // Network
+  "network": {
+    "format": "{ifname}",
+    "format-wifi": " {signalStrength}%",
+    "format-ethernet": "  {ifname}",
+    "format-disconnected": "Disconnected ⚠",
+    "tooltip-format": " {ifname} via {gwaddri}",
+    "tooltip-format-wifi": "  {ifname} @ {essid}\nIP: {ipaddr}\nStrength: {signalStrength}%\nFreq: {frequency}MHz\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
+    "tooltip-format-ethernet": " {ifname}\nIP: {ipaddr}\n up: {bandwidthUpBits} down: {bandwidthDownBits}",
+    "tooltip-format-disconnected": "Disconnected",
+    "max-length": 50,
+    "on-click": "~/.config/ml4w/settings/networkmanager.sh",
+    "on-click-right": "~/.config/ml4w/scripts/nm-applet.sh toggle",
+  },
     
     "custom/media": {
         "format": "{icon} {}",

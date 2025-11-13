@@ -1,9 +1,11 @@
 return {
   'MeanderingProgrammer/render-markdown.nvim',
   dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
-
-  config = function()
+  event = 'VeryLazy',
+  ft = { 'markdown', 'avante' },
+  config = function(_, opts)
     require('render-markdown').setup {
+      opts,
       -- Whether markdown should be rendered by default.
       enabled = true,
       -- Vim modes that will show a rendered view of the markdown file, :h mode(), for all enabled
@@ -29,7 +31,7 @@ return {
       -- Only intended to be used for plugin development / debugging.
       log_runtime = false,
       -- Filetypes this plugin will run on.
-      file_types = { 'markdown' },
+      file_types = { 'markdown', 'avante' },
       -- Takes buffer as input, if it returns true this plugin will not attach to the buffer
       ignore = function()
         return false
@@ -137,7 +139,7 @@ return {
         -- Turn on / off heading icon & background rendering.
         enabled = true,
         -- Additional modes to render headings.
-        render_modes = false,
+        render_modes = true,
         -- Turn on / off atx heading rendering.
         atx = true,
         -- Turn on / off setext heading rendering.
@@ -156,7 +158,7 @@ return {
         position = 'overlay',
         -- Added to the sign column if enabled.
         -- Output is evaluated by `cycle(value, context.level)`.
-        signs = { '󰫎 ' },
+        signs = { ' ' },
         -- Width of the heading background.
         -- | block | width of the heading text |
         -- | full  | full width of the window  |
@@ -178,34 +180,34 @@ return {
         min_width = 0,
         -- Determines if a border is added above and below headings.
         -- Can also be a list of booleans evaluated by `clamp(value, context.level)`.
-        border = false,
+        border = true,
         -- Always use virtual lines for heading borders instead of attempting to use empty lines.
-        border_virtual = false,
+        border_virtual = true,
         -- Highlight the start of the border using the foreground highlight.
-        border_prefix = false,
+        border_prefix = true,
         -- Used above heading for border.
-        above = '▄',
+        above = ' ',
         -- Used below heading for border.
-        below = '▀',
+        below = '',
         -- Highlight for the heading icon and extends through the entire line.
         -- Output is evaluated by `clamp(value, context.level)`.
         backgrounds = {
           'RenderMarkdownH1Bg',
+          'RenderMarkdownH5Bg',
+          'RenderMarkdownH6Bg',
           'RenderMarkdownH2Bg',
           'RenderMarkdownH3Bg',
           'RenderMarkdownH4Bg',
-          'RenderMarkdownH5Bg',
-          'RenderMarkdownH6Bg',
         },
         -- Highlight for the heading and sign icons.
         -- Output is evaluated using the same logic as 'backgrounds'.
         foregrounds = {
           'RenderMarkdownH1',
+          'RenderMarkdownH5',
+          'RenderMarkdownH6',
           'RenderMarkdownH2',
           'RenderMarkdownH3',
           'RenderMarkdownH4',
-          'RenderMarkdownH5',
-          'RenderMarkdownH6',
         },
         -- Define custom heading patterns which allow you to override various properties based on
         -- the contents of a heading.
@@ -441,11 +443,11 @@ return {
         -- If a list is provided output is evaluated by `cycle(value, level)`.
         highlight = {
           'RenderMarkdownQuote1',
+          'RenderMarkdownQuote5',
+          'RenderMarkdownQuote6',
           'RenderMarkdownQuote2',
           'RenderMarkdownQuote3',
           'RenderMarkdownQuote4',
-          'RenderMarkdownQuote5',
-          'RenderMarkdownQuote6',
         },
       },
       pipe_table = {

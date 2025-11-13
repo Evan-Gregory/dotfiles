@@ -33,9 +33,9 @@ else if type -q swww
 end
 
 # --- RGB effects ---
-if test -x $SCRIPTS_DIR/rgb
-    nohup $SCRIPTS_DIR/rgb >> $LOG 2>&1 &
-end
+# if test -x $SCRIPTS_DIR/rgb
+#     nohup $SCRIPTS_DIR/rgb >> $LOG 2>&1 &
+# end
 
 # --- Tmux Sessions ---
 set SESSION "default"

@@ -17,7 +17,6 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
---  TODO: make these toggle-able or both appear at same time
 vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
@@ -25,6 +24,15 @@ vim.opt.mouse = 'a'
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
+
+-- fold settings
+vim.wo.foldmethod = 'indent'
+vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
+vim.o.foldtext =
+  [[substitute(getline(v:foldstart),'\\t',repeat('\ ',&tabstop),'g').'...'.trim(getline(v:foldend)) . ' (' . (v:foldend - v:foldstart + 1) . ' lines)']]
+vim.wo.fillchars = 'fold:\\'
+vim.wo.foldnestmax = 3
+vim.wo.foldminlines = 1
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
@@ -45,7 +53,7 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
-vim.opt.signcolumn = 'yes'
+vim.opt.signcolumn = 'yes:1'
 
 -- Decrease update time
 vim.opt.updatetime = 250
@@ -80,11 +88,15 @@ vim.opt.scrolloff = 10
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>cq', vim.diagnostic.setloclist, { desc = 'Open diagnostic [q]uickfix list' })
+vim.keymap.set(
+  'n',
+  '<leader>cQ',
+  "<cmd>cexpr systemlist('uv run ruff check --output-format=concise') | copen<CR>",
+  { desc = 'Open diagnostic [Q]uickfix list' }
+)
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
--- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
--- is not what someone will guess without a bit more experience.
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
@@ -101,6 +113,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 vim.keymap.set({ 'n', 'v', 'i' }, '<C-a>', '_')
 vim.keymap.set({ 'n', 'v', 'i' }, '<C-e>', 'g_')
+vim.keymap.set({ 'n' }, ']d', vim.diagnostic.goto_next)
 vim.keymap.set({ 'n' }, ']d', vim.diagnostic.goto_next)
 vim.keymap.set({ 'n' }, '[d', vim.diagnostic.goto_prev)
 vim.keymap.set({ 'n', 'v' }, '<leader>p', '"0p', { desc = '[p]aste from system clipboard ->' })
@@ -130,6 +143,39 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
     vim.highlight.on_yank()
   end,
+})
+
+-- resize splits as window resizes
+vim.api.nvim_create_autocmd('VimResized', {
+  command = 'wincmd=',
+})
+
+-- open help in verticle split
+-- Put help on the right in a vertical full-height window
+vim.api.nvim_create_autocmd('BufWinEnter', {
+  callback = function(args)
+    if vim.bo[args.buf].buftype == 'help' then
+      vim.schedule(function()
+        vim.cmd 'wincmd L' -- move help window to the right
+        -- vim.cmd('vertical resize 88') -- optional: fix width
+      end)
+    end
+  end,
+})
+
+-- keep cursor where it be
+vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter' }, {
+  group = vim.api.nvim_create_augroup('ActiveCursorLine', { clear = true }),
+  callback = function()
+    vim.opt_local.cursorline = true
+  end,
+})
+-- Auto chmod scripts
+-- autocmd BufWinEnter ~/scripts/* if &ft == "" | setlocal ft=sh | endif
+-- autocmd BufWritePost * if &ft == "sh" | silent! execute "!chmod +x %" | endif
+vim.api.nvim_create_autocmd('BufWritePost', {
+  pattern = '*.sh',
+  command = 'if &ft == "sh" | silent! execute "!chmod +x %" | endif',
 })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
@@ -174,6 +220,7 @@ require('lazy').setup({
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
+    event = 'VeryLazy', -- Sets the loading event to 'VimEnter'
     opts = {
       signs = {
         add = { text = '+' },
@@ -184,7 +231,10 @@ require('lazy').setup({
       },
     },
   },
-  { 'ThePrimeagen/vim-be-good' },
+  {
+    'ThePrimeagen/vim-be-good',
+    event = 'VeryLazy', -- Sets the loading event to 'VimEnter'
+  },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -202,7 +252,7 @@ require('lazy').setup({
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    event = 'VeryLazy', -- Sets the loading event to 'VeryLazy'
     opts = {
       preset = 'modern',
       -- delay between pressing a key and opening which-key (milliseconds)
@@ -248,19 +298,21 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-        { '<leader>d', group = '[D]ocument' },
+        { '<leader>d', group = '[D]ebug' },
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]iki' },
         { '<leader>t', group = '[T]erminal' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>ht', group = 'Git [H]unk [T]oggle', mode = { 'n', 'v' } },
+        { '<leader>g', group = '[G]it Signs' },
         -- { '<leader>C', group = '[C]opilot' },
       },
     },
     config = function(_, opts)
       vim.api.nvim_set_hl(0, 'WhichKeyTitle', { bg = '#282A36' })
-      vim.api.nvim_set_hl(0, 'WhichKeyBorder', { bg = '#282A36' })
+      vim.api.nvim_set_hl(0, 'WhichKeyBorder', { fg = '#6272a4', bg = '#282A36' })
+      vim.api.nvim_set_hl(0, 'WhichKeyNormal', { bg = '#282A36' })
       require('which-key').setup(opts)
     end,
   },
@@ -278,8 +330,11 @@ require('lazy').setup({
     branch = '0.1.x',
     opts = {
       defaults = {
+        color_devicons = true,
         winblend = 10,
-        path_display = { truncate = true },
+        path_displays = 'smart',
+        layout_strategy = 'horizontal',
+        borderchars = { '', '', '', '', '', '', '', '' },
       },
     },
     dependencies = {
@@ -328,6 +383,17 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
+        defaults = {
+          color_devicons = true,
+          path_displays = 'smart',
+          layout_strategy = 'horizontal',
+          borderchars = { '', '', '', '', '', '', '', '' },
+          layout_config = {
+            height = 100,
+            width = 400,
+            preview_cutoff = 40,
+          },
+        },
         -- defaults = {
         --   mappings = {
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
@@ -350,22 +416,24 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', function()
-        builtin.find_files { winblend = 10 }
+        builtin.find_files {}
       end, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', function()
-        builtin.live_grep { winblend = 10 }
+        builtin.live_grep {}
       end, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set('n', '<leader>s/', builtin.current_buffer_fuzzy_find, { desc = '[S]earch [/] in Open Files' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>:', builtin.commands, { desc = 'Commands n shi' })
       vim.keymap.set('n', '<leader>st', builtin.lsp_document_symbols, { desc = '[S]earch treesitter' })
-      vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', { fg = '#6272a4', bg = '#282A36' })
-      vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { fg = '#6272a4', bg = '#282A36' })
-      vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', { fg = '#6272a4', bg = '#282A36' })
+      vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', { fg = '#6272a4' })
+      vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { fg = '#6272a4' })
+      vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', { fg = '#6272a4' })
+      vim.api.nvim_set_hl(0, 'TelescopeNormal', { fg = '#c8d3f5' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -373,24 +441,26 @@ require('lazy').setup({
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
           winblend = 10,
           previewer = false,
+          path_display = { 'filename_first' },
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
 
+      vim.keymap.set('n', "<leader>'", builtin.marks, { desc = "['] Fuzzily search marks" })
+      --vim.keymap.set('n', "<leader>'", function()
+      --  builtin.marks(require('telescope.themes').get_dropdown {
+      --    prompt_title = 'Search for Marks',
+      --    path_display = 'hidden',
+      --    grep_open_files = true,
+      --    winblend = 5,
+      --  })
+      --end, { desc = "['] Fuzzily search marks" })
+
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set('n', '<leader>s/', function()
-        builtin.live_grep {
-          grep_open_files = true,
-          prompt_title = 'Live Grep in Open Files',
-          winblend = 10,
-        }
-      end, { desc = '[S]earch [/] in Open Files' })
-
       -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files {
           cwd = vim.fn.stdpath 'config',
-          winblend = 10,
         }
       end, { desc = '[S]earch [N]eovim files' })
     end,
@@ -414,6 +484,7 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     priority = 500,
     -- TODO: this does not currently work
+    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
       diagnostics = {
         -- virtual_text = true,
@@ -512,7 +583,7 @@ require('lazy').setup({
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          map('<leader>r', vim.lsp.buf.rename, '[R]ename')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
@@ -556,10 +627,9 @@ require('lazy').setup({
           --
           -- This may be unwanted, since they displace some of your code
           --    if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-          --      map('<leader>th', function()
-          --        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-          --      end, '[T]oggle Inlay [H]ints')
-          --    end
+          map('<leader>th', function()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+          end, '[T]oggle Inlay [H]ints')
         end,
       })
 
@@ -671,7 +741,7 @@ require('lazy').setup({
           require('conform').format { async = true, lsp_format = 'fallback' }
         end,
         mode = '',
-        desc = '[F]ormat buffer',
+        desc = '[B]uffer [F]ormat',
       },
     },
     opts = {
@@ -724,14 +794,21 @@ require('lazy').setup({
   --    end,
   --  },
   {
-    'folke/tokyonight.nvim',
+    'catppuccin/nvim',
     opts = {
-      transparent = true,
+      -- transparent = false,
+      background = {
+        dark = 'macchiato',
+      },
     },
     priority = 1000,
-    init = function()
-      vim.cmd.colorscheme 'tokyonight'
+    config = function(_, opts)
+      require('catppuccin').setup(opts)
+      vim.cmd.colorscheme 'catppuccin-mocha'
       vim.cmd.hi 'Comment gui=none'
+      -- vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#85697d' })
+      -- vim.api.nvim_set_hl(0, 'CursorLineNr', { fg = '#f5c2e7' })
+      -- vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#85697d' })
     end,
   },
   -- Highlight todo, notes, etc in comments
@@ -820,6 +897,7 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      conflict_marker = { enable = true },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
@@ -827,6 +905,42 @@ require('lazy').setup({
     --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  },
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    require = 'nvim-treesitter',
+    opts = {
+      enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+      multiwindow = false, -- Enable multiwindow support.
+      max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+      min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+      line_numbers = true,
+      multiline_threshold = 20, -- Maximum number of lines to show for a single context
+      trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+      mode = 'cursor', -- Line used to calculate context. Choices: 'cursor', 'topline'
+      -- Separator between context and content. Should be a single character string, like '-'.
+      -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+      separator = '-',
+      zindex = 20, -- The Z-index of the context window
+      on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+    },
+    config = function(_, opts)
+      require('treesitter-context').setup(opts)
+      vim.api.nvim_set_hl(0, 'TreesitterContext', { bg = '' })
+      vim.api.nvim_set_hl(0, 'TreesitterContextLineNumber', { fg = '#f5c2e7', bg = '' })
+      vim.api.nvim_set_hl(0, 'TreesitterContextSeparator', { fg = '#6272a4', bg = '' })
+
+      require('treesitter-context').setup(opts)
+      -- Toggle context
+      vim.keymap.set('n', '<leader>cc', function()
+        require('treesitter-context').toggle()
+      end, { desc = '[c]ode Toggle [c]ontext' })
+      -- Attempt to show docstrings
+      --require('custom.helpers.tsc_docstrings').attach { max_lines = 3, prefix = '"""' }
+      --vim.api.nvim_create_user_command('TscDocProbe', function()
+      --  require('custom.helpers.tsc_docstrings').probe()
+      --end, {})
+    end,
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
@@ -878,6 +992,3 @@ require('lazy').setup({
     },
   },
 })
-
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et

@@ -29,6 +29,14 @@
     box-shadow: rgba(0, 0, 0, 0.116) 2 2 5 2px;
 }
 
+#window {
+    margin: 3px 15px 3px 0px;
+    padding: 2px 10px 0px 10px;
+    border-radius: 8px;
+    color:@icon_color;
+    font-size:16px;
+    font-weight:normal;
+}
 window#waybar {
     background-color: rgba(43, 48, 59, 0.2);
     border-bottom: 3px solid rgba(100, 114, 125, 0.5);
@@ -37,7 +45,39 @@ window#waybar {
     transition-duration: .5s;
 }
 window#waybar.hidden {
-    opacity: 0.2;
+    opacity: 0.5;
+}
+window#waybar.empty #window {
+    background-color:transparent;
+}
+
+.modules-left {
+    margin:6px 0px 6px 8px;
+}
+
+.modules-right {
+    margin:6px 8px 6px 0px;
+}
+
+.modules-center {
+    margin:6px 0px 6px 0px;
+}
+
+#custom-appmenu {
+    background-color: @background;
+    font-size: 12px;
+    color: @on_surface;
+    border-radius: 8px;
+    padding: 4px 10px 4px 10px;
+    margin: 2px 10px 2px 0px;
+    border: 2px solid @border_color;
+    transition: all 0.3s ease-out;    
+}
+
+#custom-appmenu:hover {
+    color: @on_surface;
+    background: @primary_container;
+    border-color: @primary;
 }
 
 #custom-dynamic_pill label {
@@ -313,16 +353,19 @@ button:hover {
     background-color: transparent;
     margin-top: 0px;
     margin-bottom: 4px;
+    border-radius: 15px;
+    border: 2px solid @primary;
 }
 
 
 /* Base style for each window icon button */
 #workspaces button {
     background-color: #89b4fa;              /* same dark background as other modules */
-    padding: 0px 5px;                /* adjust padding (vertical, horizontal) */
-    border-radius: 0;              /* rounded corners */
+    padding: 0px 2px;                /* adjust padding (vertical, horizontal) */
+    border-radius: 15;              /* rounded corners */
     margin: 0 1px;                    /* spacing between icons */
     transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
+
     /*cursor: pointer;*/                  /* show hand cursor on hover */
 }
 
@@ -334,7 +377,8 @@ button:hover {
 }
 
 #workspaces button:hover {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(203,166,247,1);
+    border-radius: 8;              /* rounded corners */
 }
 #workspaces button label{
     color: 	#444552 ;
