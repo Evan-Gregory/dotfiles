@@ -25,14 +25,18 @@ vim.opt.mouse = 'a'
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
--- fold settings
-vim.wo.foldmethod = 'indent'
-vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
-vim.o.foldtext =
-  [[substitute(getline(v:foldstart),'\\t',repeat('\ ',&tabstop),'g').'...'.trim(getline(v:foldend)) . ' (' . (v:foldend - v:foldstart + 1) . ' lines)']]
-vim.wo.fillchars = 'fold:\\'
-vim.wo.foldnestmax = 3
-vim.wo.foldminlines = 1
+-- -- fold settings
+-- vim.wo.foldmethod = 'indent'
+-- vim.wo.foldexpr = 'nvim_treesitter#foldexpr()'
+-- vim.o.foldtext =
+--   [[substitute(getline(v:foldstart),'\\t',repeat('\ ',&tabstop),'g').'...'.trim(getline(v:foldend)) . ' (' . (v:foldend - v:foldstart + 1) . ' lines)']]
+-- vim.wo.fillchars = 'fold:\\'
+-- vim.wo.foldnestmax = 3
+-- vim.wo.foldminlines = 1
+vim.o.foldcolumn = '1' -- '0' is not bad
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
@@ -87,6 +91,59 @@ vim.opt.scrolloff = 10
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+vim.keymap.set({ 'n', 'v' }, '<leader>ti', function()
+  local lines
+  local mode = vim.api.nvim_get_mode().mode
+
+  if mode:match '[vV\22]' then
+    -- Visual mode - get selected text
+    vim.cmd 'normal! "vy'
+    local text = vim.fn.getreg 'v'
+    lines = vim.split(text, '\n')
+  else
+    -- Normal mode - get whole buffer
+    lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  end
+
+  -- Check if there's already a terminal buffer open with ipython3
+  local terminal_found = false
+  local terminal_bufnr = nil
+  local terminal_winnr = nil
+
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].buftype == 'terminal' then
+      local buf_name = vim.api.nvim_buf_get_name(buf)
+      if buf_name:match 'ipython3' then
+        terminal_found = true
+        terminal_bufnr = buf
+        terminal_winnr = win
+        break
+      end
+    end
+  end
+
+  if terminal_found then
+    -- Focus the existing terminal window
+    vim.api.nvim_set_current_win(terminal_winnr)
+  else
+    -- Open vertical split with ipython3
+    vim.cmd 'vsplit | terminal ipython3'
+    terminal_bufnr = vim.api.nvim_get_current_buf()
+  end
+
+  -- Send the code to ipython
+  vim.defer_fn(function()
+    local text = table.concat(lines, '\n') .. '\n'
+    local job_id = vim.b[terminal_bufnr].terminal_job_id
+    if job_id then
+      vim.api.nvim_chan_send(job_id, text)
+    end
+  end, 500)
+end, { desc = '[T]erminal run in [I]python3' })
+-- todo: save state
+-- todo
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>cq', vim.diagnostic.setloclist, { desc = 'Open diagnostic [q]uickfix list' })
 vim.keymap.set(
@@ -110,6 +167,10 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Use CTRL+< -| > open splits
+vim.keymap.set('n', '<C-w>-', '<cmd>sp<cr>', { desc = 'Open Horizontal Split' })
+vim.keymap.set('n', '<C-w>|', '<cmd>vs<cr>', { desc = 'Open Vertical Split' })
 
 vim.keymap.set({ 'n', 'v', 'i' }, '<C-a>', '_')
 vim.keymap.set({ 'n', 'v', 'i' }, '<C-e>', 'g_')
@@ -306,6 +367,7 @@ require('lazy').setup({
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>ht', group = 'Git [H]unk [T]oggle', mode = { 'n', 'v' } },
         { '<leader>g', group = '[G]it Signs' },
+        { '<leader>j', group = '[J]ournal' },
         -- { '<leader>C', group = '[C]opilot' },
       },
     },
@@ -428,7 +490,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>:', builtin.commands, { desc = 'Commands n shi' })
+      vim.keymap.set('n', "<leader>s'", builtin.marks, { desc = "[S]earch['] Fuzzily search marks" })
+      vim.keymap.set('n', '<leader>s:', builtin.commands, { desc = 'Commands n shi' })
       vim.keymap.set('n', '<leader>st', builtin.lsp_document_symbols, { desc = '[S]earch treesitter' })
       vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', { fg = '#6272a4' })
       vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { fg = '#6272a4' })
@@ -445,7 +508,6 @@ require('lazy').setup({
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
 
-      vim.keymap.set('n', "<leader>'", builtin.marks, { desc = "['] Fuzzily search marks" })
       --vim.keymap.set('n', "<leader>'", function()
       --  builtin.marks(require('telescope.themes').get_dropdown {
       --    prompt_title = 'Search for Marks',
@@ -795,15 +857,10 @@ require('lazy').setup({
   --  },
   {
     'catppuccin/nvim',
-    opts = {
-      -- transparent = false,
-      background = {
-        dark = 'macchiato',
-      },
-    },
+    opts = {},
     priority = 1000,
     config = function(_, opts)
-      require('catppuccin').setup(opts)
+      require('catppuccin').setup { integrations = { dashboard = true, cmp = true } }
       vim.cmd.colorscheme 'catppuccin-mocha'
       vim.cmd.hi 'Comment gui=none'
       -- vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#85697d' })

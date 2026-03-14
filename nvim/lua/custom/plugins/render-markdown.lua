@@ -1,9 +1,40 @@
+local function move_done_items_to_top()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  local done_items = {}
+  local other_lines = {}
+
+  for _, line in ipairs(lines) do
+    if line:match '^%s*%- %[[!~]?x%' then
+      table.insert(done_items, line)
+    else
+      table.insert(other_lines, line)
+    end
+  end
+
+  local new_lines = vim.list_extend(done_items, other_lines)
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, new_lines)
+end
+
 return {
   'MeanderingProgrammer/render-markdown.nvim',
   dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
   event = 'VeryLazy',
   ft = { 'markdown', 'avante' },
   config = function(_, opts)
+    -- want: set up journal
+    vim.keymap.set('n', '<leader>jh', [=[<CMD>s/\[\(.*\)\]/[!\1]/<CR>]=], { desc = '[j]ournal [h]igh priority' }) -- want: toggle-able
+    vim.keymap.set('n', '<leader>jm', [=[<CMD>s/\[\(.*\)\]/[\~\1]/<CR>]=], { desc = '[j]ournal [m]edium priority' }) -- want: toggle-able
+    -- want: todo update status ' ' -> '-' -> 'x'
+    vim.keymap.set('n', '<leader>jx', [=[<CMD>s/\[\(.*\)\(\ \|\-\|x\)\]/[\1x]<CR>]=], { desc = '[j]ournal set status [x]' })
+    vim.keymap.set('n', '<leader>j-', [=[<CMD>s/\[\(.*\)\(\ \|\-\|x\)\]/[\1-]<CR>]=], { desc = '[j]ournal set status [-]' })
+    vim.keymap.set('n', '<leader>j ', [=[<CMD>s/\[\(.*\)\(x\|\-\|\ \)\]/[\1 ]<CR>]=], { desc = '[j]ournal set status [ ]' })
+    vim.keymap.set('n', '<leader>ji', function()
+      local cur_line = vim.api.nvim_get_current_line()
+      cur_line = '- [ ] ' .. cur_line
+      vim.api.nvim_set_current_line(cur_line)
+    end, { desc = 'Add [J]ournal [i]tem' })
+    --vim.api.nvim_create_autocmd('BufWritePre', { pattern = '*.md', callback = move_done_items_to_top })
+
     require('render-markdown').setup {
       opts,
       -- Whether markdown should be rendered by default.
@@ -163,7 +194,7 @@ return {
         -- | block | width of the heading text |
         -- | full  | full width of the window  |
         -- Can also be a list of the above values evaluated by `clamp(value, context.level)`.
-        width = 'full',
+        width = { 'full', 'full', 'full', 'full', 'full', 'full' },
         -- Amount of margin to add to the left of headings.
         -- Margin available space is computed after accounting for padding.
         -- If a float < 1 is provided it is treated as a percentage of available window space.
@@ -171,7 +202,8 @@ return {
         left_margin = 0,
         -- Amount of padding to add to the left of headings.
         -- Output is evaluated using the same logic as 'left_margin'.
-        left_pad = 0,
+        left_pad = 0, -- NOTE: could be cool to play around with
+
         -- Amount of padding to add to the right of headings when width is 'block'.
         -- Output is evaluated using the same logic as 'left_margin'.
         right_pad = 0,
@@ -180,34 +212,34 @@ return {
         min_width = 0,
         -- Determines if a border is added above and below headings.
         -- Can also be a list of booleans evaluated by `clamp(value, context.level)`.
-        border = true,
+        border = { true, true, false, false, false, false },
         -- Always use virtual lines for heading borders instead of attempting to use empty lines.
-        border_virtual = true,
+        border_virtual = false,
         -- Highlight the start of the border using the foreground highlight.
         border_prefix = true,
         -- Used above heading for border.
-        above = ' ',
+        above = '',
         -- Used below heading for border.
-        below = '',
+        below = '',
         -- Highlight for the heading icon and extends through the entire line.
         -- Output is evaluated by `clamp(value, context.level)`.
         backgrounds = {
           'RenderMarkdownH1Bg',
-          'RenderMarkdownH5Bg',
-          'RenderMarkdownH6Bg',
           'RenderMarkdownH2Bg',
           'RenderMarkdownH3Bg',
           'RenderMarkdownH4Bg',
+          'RenderMarkdownH5Bg',
+          'RenderMarkdownH6Bg',
         },
         -- Highlight for the heading and sign icons.
         -- Output is evaluated using the same logic as 'backgrounds'.
         foregrounds = {
           'RenderMarkdownH1',
-          'RenderMarkdownH5',
-          'RenderMarkdownH6',
           'RenderMarkdownH2',
           'RenderMarkdownH3',
           'RenderMarkdownH4',
+          'RenderMarkdownH5',
+          'RenderMarkdownH6',
         },
         -- Define custom heading patterns which allow you to override various properties based on
         -- the contents of a heading.
@@ -225,7 +257,7 @@ return {
         -- Turn on / off paragraph rendering.
         enabled = true,
         -- Additional modes to render paragraphs.
-        render_modes = false,
+        render_modes = true,
         -- Amount of margin to add to the left of paragraphs.
         -- If a float < 1 is provided it is treated as a percentage of available window space.
         -- Output is evaluated depending on the type.
@@ -360,7 +392,7 @@ return {
         -- | string     | `value`                                             |
         -- | string[]   | `cycle(value, context.level)`                       |
         -- | string[][] | `clamp(cycle(value, context.level), context.index)` |
-        icons = { '●', '○', '◆', '◇' },
+        icons = { '', '○', '◆', '◇' },
         -- Replaces 'n.'|'n)' of 'list_item'.
         -- Output is evaluated using the same logic as 'icons'.
         ordered_icons = function(ctx)
@@ -390,7 +422,7 @@ return {
         -- Turn on / off checkbox state rendering.
         enabled = true,
         -- Additional modes to render checkboxes.
-        render_modes = false,
+        render_modes = true,
         -- Render the bullet point before the checkbox.
         bullet = false,
         -- Padding to add to the right of checkboxes.
@@ -420,14 +452,20 @@ return {
         -- | scope_highlight | optional highlight for item associated with custom checkbox |
         -- stylua: ignore
         custom = {
-            todo = { raw = '[-]', rendered = ' ', highlight = 'RenderMarkdownTodo', scope_highlight = nil },
+            in_progress = { raw = '[-]', rendered = ' ', highlight = 'RenderMarkdownUnchecked', scope_highlight = nil },
+            high_prio = { raw = '[! ]', rendered = '󰄱 High Priority: ', highlight = 'RenderMarkdownError', scope_highlight = nil},
+            high_prio_in_progress = { raw = '[!-]', rendered = ' High Priority: ', highlight = 'RenderMarkdownError', scope_highlight = nil},
+            high_prio_done = { raw = '[!x]', rendered = '󰱒 High Priority: ', highlight = 'RenderMarkdownChecked', scope_highlight = nil},
+            med_prio = { raw = '[~ ]', rendered = '󰄱 Medium Priority: ', highlight = 'RenderMarkdownWarn', scope_highlight = nil},
+            med_prio_in_progress = { raw = '[~-]', rendered = ' Medium Priority: ', highlight = 'RenderMarkdownWarn', scope_highlight = nil},
+            med_prio_done = { raw = '[~x]', rendered = '󰱒 Medium Priority: ', highlight = 'RenderMarkdownChecked', scope_highlight = nil},
         },
       },
       quote = {
         -- Turn on / off block quote & callout rendering.
         enabled = true,
         -- Additional modes to render quotes.
-        render_modes = false,
+        render_modes = true,
         -- Replaces '>' of 'block_quote'.
         icon = '▋',
         -- Whether to repeat icon on wrapped lines. Requires neovim >= 0.10. This will obscure text
@@ -438,7 +476,7 @@ return {
         -- | breakindentopt | '' (empty string) |
         -- These are not validated by this plugin. If you want to avoid adding these to your main
         -- configuration then set them in win_options for this plugin.
-        repeat_linebreak = false,
+        repeat_linebreak = true,
         -- Highlight for the quote icon.
         -- If a list is provided output is evaluated by `cycle(value, level)`.
         highlight = {
@@ -506,6 +544,8 @@ return {
         -- | quote_icon | optional override for quote.icon value for individual callout       |
         -- | category   | optional metadata useful for filtering                              |
 
+        high_priority = { raw = '[!HIGH PRIORITY]', rendered = '^ High Priority', highlight = 'RenderMarkdownError', category = 'journal' },
+        medium_priority = { raw = '[!MEDIUM PRIORITY]', rendered = ' Medium Priority', highlight = 'RenderMarkdownWarn', category = 'journal' },
         note = { raw = '[!NOTE]', rendered = '󰋽 Note', highlight = 'RenderMarkdownInfo', category = 'github' },
         tip = { raw = '[!TIP]', rendered = '󰌶 Tip', highlight = 'RenderMarkdownSuccess', category = 'github' },
         important = { raw = '[!IMPORTANT]', rendered = '󰅾 Important', highlight = 'RenderMarkdownHint', category = 'github' },

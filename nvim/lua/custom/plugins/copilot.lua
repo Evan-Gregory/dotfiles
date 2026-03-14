@@ -1,57 +1,109 @@
--- Copilot.
 return {
-  {
-    'zbirenbaum/copilot.lua',
-    cmd = 'Copilot',
-    event = 'InsertEnter',
-    opts = {
-      -- I don't find the panel useful.
-      panel = { enabled = false },
-      suggestion = {
-        auto_trigger = true,
-        -- Use alt to interact with Copilot.
-        keymap = {
-          -- Disable the built-in mapping, we'll configure it in nvim-cmp.
-          accept = false,
-          accept_word = '<M-w>',
-          accept_line = '<M-l>',
-          next = '<M-]>',
-          prev = '<M-[>',
-          dismiss = '/',
-        },
-      },
-      filetypes = { markdown = true },
-    },
-    config = function(_, opts)
-      local cmp = require 'cmp'
-      local copilot = require 'copilot.suggestion'
-      local luasnip = require 'luasnip'
+  --   {
+  --     'yetone/avante.nvim',
+  --     build = vim.fn.has 'win32' ~= 0 and 'powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false' or 'make',
+  --     event = 'VeryLazy',
+  --     version = false,
+  --     opts = {
+  --       instructions_file = 'avante.md',
+  --
+  --       provider = 'openai',
+  --
+  --       providers = {
+  --         openai = {
+  --           endpoint = 'https://api.openai.com/v1',
+  --           model = 'gpt-5-mini', -- or "gpt-4o", "gpt-4.1", etc.
+  --           timeout = 30000,
+  --           api_key = os.getenv 'OPENAI_API_KEY', -- safer than hardcoding
+  --           extra_request_body = {
+  --             temperature = 1,
+  --             max_completion_tokens = 4096,
+  --           },
+  --         },
+  --       },
+  --     },
+  --     dependencies = {
+  --       'nvim-lua/plenary.nvim',
+  --       'MunifTanjim/nui.nvim',
+  --       'echasnovski/mini.pick',
+  --       'nvim-telescope/telescope.nvim',
+  --       'hrsh7th/nvim-cmp',
+  --       'ibhagwan/fzf-lua',
+  --       'stevearc/dressing.nvim',
+  --       'folke/snacks.nvim',
+  --       'nvim-tree/nvim-web-devicons',
+  --       'zbirenbaum/copilot.lua',
+  --       {
+  --         'HakonHarnes/img-clip.nvim',
+  --         event = 'VeryLazy',
+  --         opts = {
+  --           default = {
+  --             embed_image_as_base64 = false,
+  --             prompt_for_file_name = false,
+  --             drag_and_drop = { insert_mode = true },
+  --             use_absolute_path = true,
+  --           },
+  --         },
+  --       },
+  --       {
+  --         'MeanderingProgrammer/render-markdown.nvim',
+  --         opts = { file_types = { 'markdown', 'avante' } },
+  --         ft = { 'markdown', 'avante' },
+  --       },
+  --     },
+  --   },
+  --{
+  --  'zbirenbaum/copilot.lua',
+  --  cmd = 'Copilot',
+  --  event = 'InsertEnter',
+  --  opts = {
+  --    -- I don't find the panel useful.
+  --    panel = { enabled = false },
+  --    suggestion = {
+  --      auto_trigger = true,
+  --      -- Use alt to interact with Copilot.
+  --      keymap = {
+  --        -- Disable the built-in mapping, we'll configure it in nvim-cmp.
+  --        accept = false,
+  --        accept_word = '<M-w>',
+  --        accept_line = '<M-l>',
+  --        next = '<M-]>',
+  --        prev = '<M-[>',
+  --        dismiss = '/',
+  --      },
+  --    },
+  --    filetypes = { markdown = true },
+  --  },
+  --  config = function(_, opts)
+  --    local cmp = require 'cmp'
+  --    local copilot = require 'copilot.suggestion'
+  --    local luasnip = require 'luasnip'
 
-      require('copilot').setup(opts)
+  --    require('copilot').setup(opts)
 
-      local function set_trigger(trigger)
-        vim.b.copilot_suggestion_auto_trigger = trigger
-        vim.b.copilot_suggestion_hidden = not trigger
-      end
+  --    local function set_trigger(trigger)
+  --      vim.b.copilot_suggestion_auto_trigger = trigger
+  --      vim.b.copilot_suggestion_hidden = not trigger
+  --    end
 
-      -- Hide suggestions when the completion menu is open.
-      cmp.event:on('menu_opened', function()
-        if copilot.is_visible() then
-          copilot.dismiss()
-        end
-        set_trigger(false)
-      end)
+  --    -- Hide suggestions when the completion menu is open.
+  --    cmp.event:on('menu_opened', function()
+  --      if copilot.is_visible() then
+  --        copilot.dismiss()
+  --      end
+  --      set_trigger(false)
+  --    end)
 
-      -- Disable suggestions when inside a snippet.
-      cmp.event:on('menu_closed', function()
-        set_trigger(not luasnip.expand_or_locally_jumpable())
-      end)
-      vim.api.nvim_create_autocmd('User', {
-        pattern = { 'LuasnipInsertNodeEnter', 'LuasnipInsertNodeLeave' },
-        callback = function()
-          set_trigger(not luasnip.expand_or_locally_jumpable())
-        end,
-      })
-    end,
-  },
+  --    -- Disable suggestions when inside a snippet.
+  --    cmp.event:on('menu_closed', function()
+  --      set_trigger(not luasnip.expand_or_locally_jumpable())
+  --    end)
+  --    vim.api.nvim_create_autocmd('User', {
+  --      pattern = { 'LuasnipInsertNodeEnter', 'LuasnipInsertNodeLeave' },
+  --      callback = function()
+  --        set_trigger(not luasnip.expand_or_locally_jumpable())
+  --      end,
+  --    })
+  --  end,
+  --},
 }

@@ -7,13 +7,13 @@ TRANSITION_TYPE="${2:-grow}"  # default to "grow"
 TRANSITION_DURATION="${3:-3}" # default to 3 seconds
 TRANSITION_POS="$(hyprctl cursorpos)"
 
-# Initialize swww if not already running
-if ! pgrep -x swww > /dev/null; then
-    swww-daemon &
+# Initialize awww if not already running
+if ! pgrep -x awww > /dev/null; then
+    awww-daemon &
     sleep 1 &  # Give it a moment to initialize
 fi
 
-swww img --transition-type "$TRANSITION_TYPE" \
+awww img --transition-type "$TRANSITION_TYPE" \
          --transition-pos "$TRANSITION_POS" \
          --transition-duration "$TRANSITION_DURATION" \
          "$IMAGE"

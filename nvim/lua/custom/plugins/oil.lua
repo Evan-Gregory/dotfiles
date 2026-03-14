@@ -1,7 +1,18 @@
 return {
   {
     'stevearc/oil.nvim',
-    opts = {},
+    opts = {
+      view_options = {
+        show_hidden = true,
+      },
+      keymaps = {
+        ['<C-h>'] = false, -- overrides window nav
+        ['<C-l>'] = false,
+        ['_'] = { 'actions.select', opts = { horizontal = true } },
+        ['|'] = { 'actions.select', opts = { vertical = true } },
+        ['C-r'] = 'actions.refresh',
+      },
+    },
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     keys = {
       { '<leader>-', '<cmd>Oil<cr>', desc = '[-] Oil' },
@@ -370,8 +381,8 @@ return {
       }
 
       vim.keymap.set('n', '<leader>o', '<Cmd>Neotree toggle<CR>', { desc = '[O]pen NeoTree' })
-      vim.api.nvim_set_hl(0, 'NeoTreeNormal', { fg = '#828bb8' })
-      vim.api.nvim_set_hl(0, 'NeoTreeNormalNC', { fg = '#828bb8' })
+      -- vim.api.nvim_set_hl(0, 'NeoTreeNormal', { fg = '#828bb8' })
+      -- vim.api.nvim_set_hl(0, 'NeoTreeNormalNC', { fg = '#828bb8' })
     end,
   },
 }
