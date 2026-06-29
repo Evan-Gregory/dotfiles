@@ -38,6 +38,23 @@ vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decr
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
+-- Project Scoped Global Marks
+vim.o.exrc = true
+vim.o.secure = true
+local workspace_path = vim.fn.getcwd()
+local cache_dir = vim.fn.stdpath 'data'
+local project_name = vim.fn.fnamemodify(workspace_path, ':t')
+local project_dir = cache_dir .. '/myshada' .. project_name
+if vim.fn.isdirectory(project_dir) == 0 then
+  vim.fn.mkdir(project_dir, 'p')
+end
+local shadafile = project_dir .. '/' .. vim.fn.sha256(workspace_path):sub(1, 8) .. '.shada'
+vim.o.shadafile = shadafile
+local opts = { noremap = true, silent = true, desc = 'Jump to Mark' }
+vim.keymap.set('n', '<leader>sm', function()
+  require('fzf-lua').marks { cwd = project_dir }
+end, opts)
+--
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -90,6 +107,9 @@ vim.opt.scrolloff = 10
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+vim.keymap.set('n', '>', '>>', { desc = 'Indent line' })
+vim.keymap.set('n', '<', '<<', { desc = 'Dedent line' })
 
 vim.keymap.set({ 'n', 'v' }, '<leader>ti', function()
   local lines
@@ -174,11 +194,44 @@ vim.keymap.set('n', '<C-w>|', '<cmd>vs<cr>', { desc = 'Open Vertical Split' })
 
 vim.keymap.set({ 'n', 'v', 'i' }, '<C-a>', '_')
 vim.keymap.set({ 'n', 'v', 'i' }, '<C-e>', 'g_')
-vim.keymap.set({ 'n' }, ']d', vim.diagnostic.goto_next)
-vim.keymap.set({ 'n' }, ']d', vim.diagnostic.goto_next)
-vim.keymap.set({ 'n' }, '[d', vim.diagnostic.goto_prev)
+vim.keymap.set({ 'n', 'v', 'i' }, '<C-S-a>', '0')
+vim.keymap.set({ 'n', 'v', 'i' }, '<C-S-e>', '$')
+vim.keymap.set({ 'n' }, ']d', function()
+  vim.diagnostic.jump {
+    count = 1,
+    on_jump = function()
+      vim.diagnostic.open_float()
+    end,
+  }
+end)
+vim.keymap.set({ 'n' }, '[d', function()
+  vim.diagnostic.jump {
+    count = -1,
+    on_jump = function()
+      vim.diagnostic.open_float()
+    end,
+  }
+end)
 vim.keymap.set({ 'n', 'v' }, '<leader>p', '"0p', { desc = '[p]aste from system clipboard ->' })
 vim.keymap.set({ 'n', 'v' }, '<leader>P', '"0P', { desc = '[P]aste from system clipboard <-' })
+vim.keymap.set('n', '<leader>yp', function()
+  local path = vim.fn.expand '%:.'
+  vim.fn.setreg('+', path)
+  vim.notify('Copied: ' .. path, vim.log.levels.INFO)
+end, { desc = '[Y]ank file [p]ath' })
+vim.keymap.set('n', '<leader>yP', function()
+  local path = vim.fn.expand '%:p'
+  vim.fn.setreg('+', path)
+  vim.notify('Copied: ' .. path, vim.log.levels.INFO)
+end, { desc = '[Y]ank file absolute [P]ath' })
+
+vim.keymap.set('n', '<Down>', ':m .+1<CR>==', { desc = 'Move line down', silent = true })
+vim.keymap.set('n', '<Up>', ':m .-2<CR>==', { desc = 'Move line up', silent = true })
+vim.keymap.set('v', '<Down>', ":m '>+1<CR>gv=gv", { desc = 'Move selection down', silent = true })
+vim.keymap.set('v', '<Up>', ":m '<-2<CR>gv=gv", { desc = 'Move selection up', silent = true })
+
+vim.keymap.set('v', '+', '<C-a>gv', { desc = 'Increment numbers' })
+vim.keymap.set('v', '-', '<C-x>gv', { desc = 'Decrement numbers' })
 
 -- TODO: make this toggle-able
 vim.keymap.set('n', '<leader>S', '<cmd>setlocal spell spelllang=<cr>', { desc = '[s] Toggle spell check' })
@@ -193,16 +246,17 @@ vim.api.nvim_create_autocmd('VimEnter', {
     vim.opt.colorcolumn = '81'
   end,
 })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
---  See `:help vim.highlight.on_yank()`
+--  See `:help vim.hl.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
-    vim.highlight.on_yank()
+    vim.hl.on_yank()
   end,
 })
 
@@ -318,7 +372,7 @@ require('lazy').setup({
       preset = 'modern',
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.opt.timeoutlen
-      delay = 0,
+      delay = 100,
       icons = {
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
@@ -376,6 +430,9 @@ require('lazy').setup({
       vim.api.nvim_set_hl(0, 'WhichKeyBorder', { fg = '#6272a4', bg = '#282A36' })
       vim.api.nvim_set_hl(0, 'WhichKeyNormal', { bg = '#282A36' })
       require('which-key').setup(opts)
+      vim.keymap.set('n', '<leader>?', function()
+        require('which-key').show()
+      end, { desc = 'Show keybinds' })
     end,
   },
 
@@ -661,7 +718,7 @@ require('lazy').setup({
           --
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+          if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
             local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
@@ -688,7 +745,7 @@ require('lazy').setup({
           -- code, if the language server you are using supports them
           --
           -- This may be unwanted, since they displace some of your code
-          --    if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+          --    if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
           map('<leader>th', function()
             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
           end, '[T]oggle Inlay [H]ints')
@@ -840,27 +897,28 @@ require('lazy').setup({
   --    -- change the command in the config to whatever the name of that colorscheme is.
   --    --
   --    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  --    'Mofiqul/dracula.nvim',
-  --    opts = {
-  --      transparent_bg = true,
-  --    },
-  --    priority = 1000, -- Make sure to load this before all the other start plugins.
-  --    init = function()
-  --      -- Load the colorscheme here.
-  --      -- Like many other themes, this one has different styles, and you could load
-  --      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  --      vim.cmd.colorscheme 'dracula'
+  -- {
+  --   'Mofiqul/dracula.nvim',
+  --   opts = {
+  --     transparent_bg = true,
+  --   },
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   init = function()
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'dracula'
   --
-  --      -- You can configure highlights by doing something like:
-  --      vim.cmd.hi 'Comment gui=none'
-  --    end,
-  --  },
+  --     -- You can configure highlights by doing something like:
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
   {
     'catppuccin/nvim',
     opts = {},
     priority = 1000,
     config = function(_, opts)
-      require('catppuccin').setup { integrations = { dashboard = true, cmp = true } }
+      require('catppuccin').setup { transparent_background = true, integrations = { dashboard = true, cmp = true } }
       vim.cmd.colorscheme 'catppuccin-mocha'
       vim.cmd.hi 'Comment gui=none'
       -- vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#85697d' })

@@ -44,17 +44,23 @@ tmux has-session -t $SESSION 2>/dev/null
 if test $status -eq 0
     exit 0
 end
-tmux new-session -d -s $SESSION -n JOURNAL
 tmux new-window -t $SESSION:2 -n TERMINAL
 tmux new-window -t $SESSION:3 -n DOTS
 tmux new-window -t $SESSION:4 -n BTOP
 
 
-tmux send-keys -t $SESSION:JOURNAL "nvim $JOURNAL_FILE" C-m
 tmux send-keys -t $SESSION:DOTS 'cd ~/dotfiles' C-m
 
 # BTOP
 tmux send-keys -t $SESSION:BTOP 'btop' C-m
+
+set SESSION "journal"
+tmux has-session -t $SESSION 2>/dev/null
+if test $status -eq 0
+    exit 0
+end
+tmux new-session -d -s $SESSION -n JOURNAL
+tmux send-keys -t $SESSION:JOURNAL "nvim $JOURNAL_FILE" C-m
 
 # --- Notifications ---
 if type -q dunst

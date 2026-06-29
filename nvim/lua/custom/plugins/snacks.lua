@@ -1,7 +1,7 @@
 return {
   'folke/snacks.nvim',
   lazy = false,
-  --@type snacks.Config
+  ---@type snacks.Config
   opts = {
     image = { enabled = true },
     statuscolumn = { enabled = true },
@@ -26,7 +26,7 @@ return {
             ⢻⣿⣿⣄   ⠈⠻⣿⣿⣿⣷⣿⣿⣿⣿⣿⡟ ⠫⢿⣿⡆     
              ⠻⣿⣿⣿⣿⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⢀⣀⣤⣾⡿⠃     ]],
         -- stylua: ignore
-        --@type snacks.dashboard.Item[]
+        ---@type snacks.dashboard.Item[]
         keys = {
           { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
           { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
@@ -46,4 +46,8 @@ return {
   --   end,
   --   desc = 'Snacks: Icons',
   -- },
+  config = function(_, opts)
+    vim.keymap.set('n', '<leader>si', '<cmd>lua Snacks.picker.icons()<cr>', { desc = 'Snacks: Icons' })
+    require('snacks').setup(opts)
+  end,
 }

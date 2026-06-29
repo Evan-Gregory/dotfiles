@@ -33,7 +33,16 @@ return {
       },
       {
         '<leader>wj',
-        '<cmd>WikiJournal<cr>',
+        function()
+          vim.cmd 'WikiJournal'
+          local first_line = vim.api.nvim_buf_get_lines(0, 0, 1, true)[1]
+          -- Already has a header (existing entry) -> leave it alone
+          if first_line:sub(1, 1) == '#' then
+            return
+          end
+          local header = '# ' .. os.date '%Y-%m-%d'
+          vim.api.nvim_buf_set_lines(0, 0, 1, true, { header, '' })
+        end,
         desc = 'Wiki Pages',
       },
     },

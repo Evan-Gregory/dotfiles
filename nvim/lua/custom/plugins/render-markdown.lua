@@ -21,7 +21,7 @@ return {
   event = 'VeryLazy',
   ft = { 'markdown', 'avante' },
   config = function(_, opts)
-    -- want: set up journal
+    -- want: set up journal (move to wiki)
     vim.keymap.set('n', '<leader>jh', [=[<CMD>s/\[\(.*\)\]/[!\1]/<CR>]=], { desc = '[j]ournal [h]igh priority' }) -- want: toggle-able
     vim.keymap.set('n', '<leader>jm', [=[<CMD>s/\[\(.*\)\]/[\~\1]/<CR>]=], { desc = '[j]ournal [m]edium priority' }) -- want: toggle-able
     -- want: todo update status ' ' -> '-' -> 'x'
@@ -30,7 +30,11 @@ return {
     vim.keymap.set('n', '<leader>j ', [=[<CMD>s/\[\(.*\)\(x\|\-\|\ \)\]/[\1 ]<CR>]=], { desc = '[j]ournal set status [ ]' })
     vim.keymap.set('n', '<leader>ji', function()
       local cur_line = vim.api.nvim_get_current_line()
-      cur_line = '- [ ] ' .. cur_line
+      if cur_line[0] == '\t' then
+        cur_line = '\t- [ ] ' .. string.sub(cur_line, 1, -1)
+      else
+        cur_line = '- [ ] ' .. cur_line
+      end
       vim.api.nvim_set_current_line(cur_line)
     end, { desc = 'Add [J]ournal [i]tem' })
     --vim.api.nvim_create_autocmd('BufWritePre', { pattern = '*.md', callback = move_done_items_to_top })

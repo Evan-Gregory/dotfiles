@@ -2,8 +2,8 @@ if status is-interactive
     # Commands to run in interactive sessions can go here
 	pokemon-colorscripts -r --no-title &
 	starship init fish | source &
-	thefuck --alias | source &
-	~/.config/fish/tty.sh &
+        zoxide init fish | source
+        cat ~/.local/state/caelestia/sequences.txt 2> /dev/null
 end
 
 # Start a tmux session if not already inside one
@@ -12,6 +12,7 @@ if type -q tmux
         ; or tmux new -s default
     end
 end
+
 # Start Hyprland automatically when this is a *login* shell on tty1.
 if status is-login
     if test (tty) = "/dev/tty1"
@@ -21,6 +22,7 @@ if status is-login
         end
     end
 end
+
 set -l teal 94e2d5
 set -l flamingo f2cdcd
 set -l mauve cba6f7
@@ -33,11 +35,11 @@ set -l blue 89b4fa
 set -l gray 1f1d2e
 set -l black 191724
     
-# Completion Pager Colors
-set -g fish_pager_color_progress $gray
-set -g fish_pager_color_prefix $mauve
-set -g fish_pager_color_completion $peach
-set -g fish_pager_color_description $gray
+# # Completion Pager Colors
+# set -g fish_pager_color_progress $gray
+# set -g fish_pager_color_prefix $mauve
+# set -g fish_pager_color_completion $peach
+# set -g fish_pager_color_description $gray
 
 # Some config
 set -g fish_greeting
@@ -60,11 +62,12 @@ set -g __fish_git_prompt_char_upstream_equal ''
 set -g __fish_git_prompt_char_upstream_prefix ''''
 
 
-set -g man_blink -o $teal
-set -g man_bold -o $pink
-set -g man_standout -b $gray
-set -g man_underline -u $blue
+# set -g man_blink -o $teal
+# set -g man_bold -o $pink
+# set -g man_standout -b $gray
+# set -g man_underline -u $blue
 
+export MANPAGER="nvim +Man!"
 
 # Directory abbreviations
 abbr -a -g l 'ls'
@@ -73,6 +76,12 @@ abbr -a -g ll 'ls -l'
 abbr -a -g lal 'ls -al'
 abbr -a -g d 'dirs'
 abbr -a -g h 'cd $HOME'
+
+# ARM GNU Toolchain
+export ARMGCC_DIR=/usr
+export PATH="$ARMGCC_DIR/bin:$PATH"
+
+export SDK_ROOT_DIR=~/StreamHome/streametric-gateways/stream-m-lite/StreamMLite/SDK_25_03_00_RW612/devices/RW612/
 
 # Locale
 export LANG="en_US.UTF-8"
@@ -164,6 +173,15 @@ complete --no-files --command jiratui --arguments "(_jiratui_completion)";
 # 	neofetch --backend 'w3m' --xoffset 34 --yoffset 34 --gap 0
 # end
 
+eval "$(fzf --fish)"
+set FZF_CTRL_T_OPTS "
+  --walker-skip .git,node_modules,target,.cache,.local
+  --preview 'bat -n --color=always {}'
+  --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+
+abbr v1 'cd /home/evang/StreamHome/streametric-backend'
+abbr v2be 'cd /home/evang/StreamHome/streametric-v2-be'
+abbr stream 'cd /home/evang/StreamHome'
 
 alias bat='bat --theme="Catppuccin-mocha"'
 alias hc=herbstclient
@@ -186,4 +204,208 @@ alias voldn='amixer set Master 5%-'
 alias volmute='amixer set Master toggle'
 
 
-set PATH $PATH $HOME/.local/bin
+set PATH $PATH $HOME/.local/bin $HOME/.cargo/bin/ $HOME/Documents/awww/target/release $HOME/.bun/bin  /usr/local/bin/caelestia
+
+
+
+
+# =============================================================================
+#
+# Utility functions for zoxide.
+#
+
+# pwd based on the value of _ZO_RESOLVE_SYMLINKS.
+function __zoxide_pwd
+    builtin pwd -L
+end
+
+# A copy of fish's internal cd function. This makes it possible to use
+# `alias cd=z` without causing an infinite loop.
+if ! builtin functions --query __zoxide_cd_internal
+    string replace --regex -- '^function cd\s' 'function __zoxide_cd_internal ' <$__fish_data_dir/functions/cd.fish | source
+end
+
+# cd + custom logic based on the value of _ZO_ECHO.
+function __zoxide_cd
+    if set -q __zoxide_loop
+        builtin echo "zoxide: infinite loop detected"
+        builtin echo "Avoid aliasing `cd` to `z` directly, use `zoxide init --cmd=cd fish` instead"
+        return 1
+    end
+    __zoxide_loop=1 __zoxide_cd_internal $argv
+end
+
+# =============================================================================
+#
+# Hook configuration for zoxide.
+#
+
+# Initialize hook to add new entries to the database.
+function __zoxide_hook --on-variable PWD
+    test -z "$fish_private_mode"
+    and command zoxide add -- (__zoxide_pwd)
+end
+
+# =============================================================================
+#
+# When using zoxide with --no-cmd, alias these internal functions as desired.
+#
+
+# Jump to a directory using only keywords.
+function __zoxide_z
+    set -l argc (builtin count $argv)
+    if test $argc -eq 0
+        __zoxide_cd $HOME
+    else if test "$argv" = -
+        __zoxide_cd -
+    else if test $argc -eq 1 -a -d $argv[1]
+        __zoxide_cd $argv[1]
+    else if test $argc -eq 2 -a $argv[1] = --
+        __zoxide_cd -- $argv[2]
+    else
+        set -l result (command zoxide query --exclude (__zoxide_pwd) -- $argv)
+        and __zoxide_cd $result
+    end
+end
+
+# Completions.
+function __zoxide_z_complete
+    set -l tokens (builtin commandline --current-process --tokenize)
+    set -l curr_tokens (builtin commandline --cut-at-cursor --current-process --tokenize)
+
+    if test (builtin count $tokens) -le 2 -a (builtin count $curr_tokens) -eq 1
+        # If there are < 2 arguments, use `cd` completions.
+        complete --do-complete "'' "(builtin commandline --cut-at-cursor --current-token) | string match --regex -- '.*/$'
+    else if test (builtin count $tokens) -eq (builtin count $curr_tokens)
+        # If the last argument is empty, use interactive selection.
+        set -l query $tokens[2..-1]
+        set -l result (command zoxide query --exclude (__zoxide_pwd) --interactive -- $query)
+        and __zoxide_cd $result
+        and builtin commandline --function cancel-commandline repaint
+    end
+end
+complete --command __zoxide_z --no-files --arguments '(__zoxide_z_complete)'
+
+# Jump to a directory using interactive search.
+function __zoxide_zi
+    set -l result (command zoxide query --interactive -- $argv)
+    and __zoxide_cd $result
+end
+
+# =============================================================================
+#
+# Commands for zoxide. Disable these using --no-cmd.
+#
+
+abbr --erase z &>/dev/null
+alias z=__zoxide_z
+
+abbr --erase zi &>/dev/null
+alias zi=__zoxide_zi
+
+# =============================================================================
+#
+# To initialize zoxide, add this to your configuration (usually
+# ~/.config/fish/config.fish):
+#
+#   
+# 
+# =============================================================================
+# AWWW
+# Print an optspec for argparse to handle cmd's options that are independent of any subcommand.
+function __fish_awww_global_optspecs
+	string join \n h/help V/version
+end
+
+function __fish_awww_needs_command
+	# Figure out if the current invocation already has a command.
+	set -l cmd (commandline -opc)
+	set -e cmd[1]
+	argparse -s (__fish_awww_global_optspecs) -- $cmd 2>/dev/null
+	or return
+	if set -q argv[1]
+		# Also print the command, so this can be used to figure out what it is.
+		echo $argv[1]
+		return 1
+	end
+	return 0
+end
+
+function __fish_awww_using_subcommand
+	set -l cmd (__fish_awww_needs_command)
+	test -z "$cmd"
+	and return 1
+	contains -- $cmd[1] $argv
+end
+
+complete -c awww -n "__fish_awww_needs_command" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c awww -n "__fish_awww_needs_command" -s V -l version -d 'Print version'
+complete -c awww -n "__fish_awww_needs_command" -f -a "clear" -d 'Fills the specified outputs with the given color'
+complete -c awww -n "__fish_awww_needs_command" -f -a "restore" -d 'Restores the last displayed image on the specified outputs'
+complete -c awww -n "__fish_awww_needs_command" -f -a "clear-cache" -d 'Clears the awww cache'
+complete -c awww -n "__fish_awww_needs_command" -f -a "img" -d 'Sends an image (or animated gif) for the daemon to display'
+complete -c awww -n "__fish_awww_needs_command" -f -a "pause" -d 'Pauses the daemon'
+complete -c awww -n "__fish_awww_needs_command" -f -a "kill" -d 'Kills the daemon'
+complete -c awww -n "__fish_awww_needs_command" -f -a "query" -d 'Asks the daemon to print output information (names and dimensions)'
+complete -c awww -n "__fish_awww_needs_command" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+complete -c awww -n "__fish_awww_using_subcommand clear" -s n -l namespace -d 'The daemon\'s namespace' -r
+complete -c awww -n "__fish_awww_using_subcommand clear" -s o -l outputs -d 'Comma separated list of outputs to display the image at' -r
+complete -c awww -n "__fish_awww_using_subcommand clear" -s a -l all -d 'Clear all awww-daemon instances (all namespaces)'
+complete -c awww -n "__fish_awww_using_subcommand clear" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c awww -n "__fish_awww_using_subcommand restore" -s n -l namespace -d 'The daemon\'s namespace' -r
+complete -c awww -n "__fish_awww_using_subcommand restore" -s o -l outputs -d 'Comma separated list of outputs to restore' -r
+complete -c awww -n "__fish_awww_using_subcommand restore" -s a -l all -d 'Restore all awww-daemon instances (all namespaces)'
+complete -c awww -n "__fish_awww_using_subcommand restore" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c awww -n "__fish_awww_using_subcommand clear-cache" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c awww -n "__fish_awww_using_subcommand img" -s o -l outputs -d 'Comma separated list of outputs to display the image at' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -s n -l namespace -d 'The daemon\'s namespace' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -l resize -d 'Whether to resize the image and the method by which to resize it' -r -f -a "no\t'Do not resize the image'
+crop\t'Resize the image to fill the whole screen, cropping out parts that don\'t fit'
+fit\t'Resize the image to fit inside the screen, preserving the original aspect ratio'
+stretch\t'Resize the image to fit inside the screen, without preserving the original aspect ratio'"
+complete -c awww -n "__fish_awww_using_subcommand img" -l fill-color -d 'Which color to fill the padding with when output image does not fill screen' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -s f -l filter -d 'Filter to use when scaling images (run awww img --help to see options)' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -s t -l transition-type -d 'Sets the type of transition. Default is \'simple\', that fades into the new image' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -l transition-step -d 'How fast the transition approaches the new image' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -l transition-duration -d 'How long the transition takes to complete in seconds' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -l transition-fps -d 'Frame rate for the transition effect' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -l transition-angle -d 'This is used for the \'wipe\' and \'wave\' transitions. It controls the angle of the wipe' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -l transition-pos -d 'This is only used for the \'grow\',\'outer\' transitions. It controls the center of circle (default is \'center\')' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -l transition-bezier -d 'bezier curve to use for the transition https://cubic-bezier.com is a good website to get these values from' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -l transition-wave -d 'currently only used for \'wave\' transition to control the width and height of each wave' -r
+complete -c awww -n "__fish_awww_using_subcommand img" -s a -l all -d 'Set the image for all awww-daemon instances (all namespaces)'
+complete -c awww -n "__fish_awww_using_subcommand img" -l no-resize -d 'Do not resize the image. Equivalent to `--resize=no`'
+complete -c awww -n "__fish_awww_using_subcommand img" -l invert-y -d 'inverts the y position sent in \'transition_pos\' flag'
+complete -c awww -n "__fish_awww_using_subcommand img" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c awww -n "__fish_awww_using_subcommand pause" -s n -l namespace -d 'The daemon\'s namespace' -r
+complete -c awww -n "__fish_awww_using_subcommand pause" -s a -l all -d 'Pause all awww-daemon instances (all namespaces)'
+complete -c awww -n "__fish_awww_using_subcommand pause" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c awww -n "__fish_awww_using_subcommand kill" -s n -l namespace -d 'The daemon\'s namespace' -r
+complete -c awww -n "__fish_awww_using_subcommand kill" -s a -l all -d 'Kill all awww-daemon instances (all namespaces)'
+complete -c awww -n "__fish_awww_using_subcommand kill" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c awww -n "__fish_awww_using_subcommand query" -s n -l namespace -d 'The daemon\'s namespace' -r
+complete -c awww -n "__fish_awww_using_subcommand query" -s a -l all -d 'Query all awww-daemon instances (all namespaces)'
+complete -c awww -n "__fish_awww_using_subcommand query" -s j -l json -d 'Print the information in `json` format'
+complete -c awww -n "__fish_awww_using_subcommand query" -s h -l help -d 'Print help (see more with \'--help\')'
+complete -c awww -n "__fish_awww_using_subcommand help; and not __fish_seen_subcommand_from clear restore clear-cache img pause kill query help" -f -a "clear" -d 'Fills the specified outputs with the given color'
+complete -c awww -n "__fish_awww_using_subcommand help; and not __fish_seen_subcommand_from clear restore clear-cache img pause kill query help" -f -a "restore" -d 'Restores the last displayed image on the specified outputs'
+complete -c awww -n "__fish_awww_using_subcommand help; and not __fish_seen_subcommand_from clear restore clear-cache img pause kill query help" -f -a "clear-cache" -d 'Clears the awww cache'
+complete -c awww -n "__fish_awww_using_subcommand help; and not __fish_seen_subcommand_from clear restore clear-cache img pause kill query help" -f -a "img" -d 'Sends an image (or animated gif) for the daemon to display'
+complete -c awww -n "__fish_awww_using_subcommand help; and not __fish_seen_subcommand_from clear restore clear-cache img pause kill query help" -f -a "pause" -d 'Pauses the daemon'
+complete -c awww -n "__fish_awww_using_subcommand help; and not __fish_seen_subcommand_from clear restore clear-cache img pause kill query help" -f -a "kill" -d 'Kills the daemon'
+complete -c awww -n "__fish_awww_using_subcommand help; and not __fish_seen_subcommand_from clear restore clear-cache img pause kill query help" -f -a "query" -d 'Asks the daemon to print output information (names and dimensions)'
+complete -c awww -n "__fish_awww_using_subcommand help; and not __fish_seen_subcommand_from clear restore clear-cache img pause kill query help" -f -a "help" -d 'Print this message or the help of the given subcommand(s)'
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
+
+# opencode
+fish_add_path /home/evang/.opencode/bin
+
+# pnpm
+set -gx PNPM_HOME "/home/evang/.local/share/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end

@@ -24,6 +24,7 @@ create_symlink nvim "$CONFIG_DIR/nvim"
 create_symlink git "$CONFIG_DIR/git"
 create_symlink kitty "$CONFIG_DIR/kitty"
 create_symlink hypr "$CONFIG_DIR/hypr"
+create_symlink hypr/.icons "$HOME"
 create_symlink dunst "$CONFIG_DIR/dunst"
 create_symlink cava "$CONFIG_DIR/cava"
 create_symlink fish "$CONFIG_DIR/fish"
@@ -33,16 +34,18 @@ create_symlink starship.toml "$CONFIG_DIR/starship.toml"
 create_symlink tmux "$CONFIG_DIR/tmux"
 create_symlink lazygit "$CONFIG_DIR/lazygit"
 create_symlink nushell "$CONFIG_DIR/nushell"
+create_symlink quickshell "$CONFIG_DIR/quickshell"
+create_symlink yazi "$CONFIG_DIR/yazi"
 
 # TODO: standatdize this 
-if [ -e "$HOME/Documents/swww/target/release/swww" ] || [ -L "$HOME/Documents/swww/target/release/swww" ]; then
-  trash "$HOME/Documents/swww/target/release/swww"
+if [ -e "$HOME/Documents/awww/target/release/awww" ] || [ -L "$HOME/Documents/awww/target/release/awww" ]; then
+  trash "$HOME/Documents/awww/target/release/awww"
 fi
-if [ -e "$HOME/Documents/swww/target/release/swww-daemon" ] || [ -L "$HOME/Documents/swww/target/release/swww-daemon" ]; then
-  trash "$HOME/Documents/swww/target/release/swww-daemon"
+if [ -e "$HOME/Documents/awww/target/release/awww-daemon" ] || [ -L "$HOME/Documents/awww/target/release/awww-daemon" ]; then
+  trash "$HOME/Documents/awww/target/release/awww-daemon"
 fi
-ln -sf /home/evang/Documents/swww/target/release/swww ~/.local/bin/swww
-ln -sf /home/evang/Documents/swww/target/release/swww-daemon ~/.local/bin/swww-daemon
+ln -sf /home/evang/Documents/awww/target/release/awww ~/.local/bin/awww
+ln -sf /home/evang/Documents/awww/target/release/awww-daemon ~/.local/bin/awww-daemon
 
 
 # Use sudo directly for system-wide symlink

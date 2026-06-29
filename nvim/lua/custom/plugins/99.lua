@@ -10,8 +10,8 @@ return {
       local cwd = vim.uv.cwd()
       local basename = vim.fs.basename(cwd)
       _99.setup {
-        provider = _99.Providers.OpenCodeProvider, -- default: OpenCodeProvider
-        model = 'anthropic/claude-sonnet-4-5', -- or "anthropic/claude-sonnet-4-6"
+        provider = _99.Providers.ClaudeCodeProvider, -- default: OpenCodeProvider
+        model = 'claude-sonnet-4-6', -- or "anthropic/claude-sonnet-4-6"
         logger = {
           level = _99.DEBUG,
           path = '/tmp/' .. basename .. '.99.debug',
@@ -97,8 +97,89 @@ return {
 
       vim.keymap.set('v', '<leader>9d', function()
         _99.visual {
-          additional_prompt = 'Write a docstring for the method or class in selection. If there are multiple write one for each seperatly from the others #docstring_writer',
+          additional_prompt = 'Using the highlighted section as your target, write a docstring',
+          additional_rules = { name = 'docstring_writer', path = '~/.claude/skills/docstring_writer/SKILL.md' },
         }
+      end)
+
+      vim.keymap.set('v', '<leader>9c', function()
+        -- Exit visual mode so '< '> marks are committed
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'x', false)
+
+        local start_pos = vim.fn.getpos "'<"
+        local end_pos = vim.fn.getpos "'>"
+        local start_line, start_col = start_pos[2], start_pos[3]
+        local end_line, end_col = end_pos[2], end_pos[3]
+
+        local lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+        local selection = ''
+        if #lines > 0 then
+          if end_col >= 2147483647 then
+            end_col = #lines[#lines]
+          end
+          lines[#lines] = lines[#lines]:sub(1, end_col)
+          lines[1] = lines[1]:sub(start_col)
+          selection = table.concat(lines, '\n')
+        end
+
+        local prompt = 'Follow the smart-commit skill exactly. Do not read any files or search the codebase. Only run git commands and commit.'
+        if selection ~= '' then
+          prompt = prompt .. '\n\n<HighlightedContext>\n' .. selection .. '\n</HighlightedContext>'
+        end
+
+        _99.vibe {
+          additional_rules = {
+            { name = 'smart-commit', path = '~/.claude/skills/smart-commit/SKILL.md' },
+          },
+          additional_prompt = prompt,
+        }
+      end)
+
+      vim.keymap.set('n', '<leader>to', function()
+        local stdout_data = {}
+        local stderr_data = {}
+
+        vim.fn.jobstart({ 'claude', '-p', '/test-outline' }, {
+          stdout_buffered = true,
+          stderr_buffered = true,
+          on_stdout = function(_, data)
+            stdout_data = data or {}
+          end,
+          on_stderr = function(_, data)
+            stderr_data = data or {}
+          end,
+          on_exit = function(_, code)
+            vim.schedule(function()
+              if code ~= 0 then
+                local err = table.concat(
+                  vim.tbl_filter(function(l) return l ~= '' end, stderr_data),
+                  '\n'
+                )
+                vim.notify('test-outline failed:\n' .. err, vim.log.levels.ERROR)
+                return
+              end
+
+              local summary = {}
+              local entries = {}
+              for _, line in ipairs(stdout_data) do
+                if line == '' then
+                elseif line:sub(1, 1) == '#' then
+                  table.insert(summary, line)
+                else
+                  table.insert(entries, line)
+                end
+              end
+
+              if #summary > 0 then
+                vim.notify(table.concat(summary, '\n'), vim.log.levels.INFO)
+              end
+
+              vim.fn.setqflist({}, 'r', { title = 'Test Outline', efm = '%f:%l: %m', lines = entries })
+              vim.cmd 'copen'
+              vim.notify('Test outline ready — ' .. #vim.fn.getqflist() .. ' items')
+            end)
+          end,
+        })
       end)
     end,
   },

@@ -1,37 +1,61 @@
-# Use custom format:
-format="""
-$hostname\
-$directory\
-$git_branch\
-$direnv\
-$aws\
-$line_break\
-$cmd_duration\
-$character
-"""
+format = """
+$cmd_duration$directory$git_branch$aws
+  $character"""
 
-# TODO: add names for colors
-palette = 'cli'
-[palettes.cli]
-#git_orange = "#f16148"
+palette = "dracula"
+
+[palettes.dracula]
+background = "#282a36"
+current_line = "#44475a"
+foreground = "#49628a"
+comment = "#6272a4"
+cyan = "#8be9fd"
+green = "#50fa7b"
+orange = "#ffb86c"
+pink = "#ff79c6"
+purple = "#bd93f9"
+red = "#ff5555"
+yellow = "#f1fa8c"
+
+[directory.substitutions]
+"Desktop" = "  "
+"Documents" = "  "
+"Downloads" = "  "
+"Music" = " 󰎈 "
+"Pictures" = "  "
+"Videos" = "  "
+"GitHub" = " 󰊤 "
 
 # Prompt symbols 
 [character]
-success_symbol = "[∮](#a6e3a1 bold)"
-error_symbol = "[∲](#f38ba8)"
+success_symbol = "[ ](bold fg:green)"
+error_symbol = "[ ](bold fg:pink)"
 vicmd_symbol = "[∮](#f9e2af)"
 
+[fill]
+symbol = '-'
+style = 'fg:245'
+
 [directory]
-format = "[]($style)[(bg:#89b4fa fg:#49628a)$path](bg:#89b4fa fg:#49628a)[ ]($style)"
-style = "fg:#89b4fa"
+style = "bg:blue fg:foreground"
+format = '[](fg:blue)[󰉋 → $path]($style)[](fg:blue)'
+truncation_length = 2
+truncation_symbol = ".../"
+home_symbol = " "
+read_only = "  "
 
 [git_branch]
-format = "[]($style)[[ ](bg:#f16148 fg:#49628a bold)$branch](bg:#f16148 fg:#4c4f69)[ ]($style)"
-style = "fg:#f16148"
+#  
+symbol = ""
+truncation_length = 48
+truncation_symbol = ""
+format = " 󰜥 []($style)[[$symbol ](bg:orange fg:foreground bold)$branch](bg:orange fg:foreground)[ ]($style)"
+style = "fg:orange bold"
 
 [cmd_duration]
-format = "[$duration]($style) "
-style = "yellow"
+min_time = 500
+format = "[]($style)[$duration](bg:yellow fg:foreground)[ ]($style)"
+style = "fg:yellow"
 
 [hostname]
 ssh_only = true
@@ -41,8 +65,12 @@ style = "fg: bold dimmed white"
 disabled = false
 
 [aws]
-format = "[]($style)[[☁ ](bg:#f9e2af fg:#49628a bold) on $profile ($region) $duration](bg:#f9e2af fg:#4c4f69)[ ]($style)"
-style = "fg:#f9e2af"
+format = "[]($style)[[☁ ](bg:yellow fg:foreground bold) on $profile ($region) $duration](bg:yellow fg:foreground)[ ]($style)"
+style = "fg:yellow"
+
+[shell]
+fish_indicator = '󰈺 '
+nu_indicator = ''
 
 [python]
 format = "[]($style)[[🐍 ](bg:#f9e2af fg:#49628a bold) $version](bg:#f9e2af fg:#4c4f69)[ ]($style)"

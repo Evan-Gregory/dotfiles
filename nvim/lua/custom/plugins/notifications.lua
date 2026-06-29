@@ -35,6 +35,7 @@ return {
         timeout = 3000,
         render = 'wrapped-compact',
         top_down = false,
+        background_colour = '#000000',
         max_height = function()
           return math.floor(vim.o.lines * 0.75)
         end,
