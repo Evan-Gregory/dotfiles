@@ -446,7 +446,7 @@ require('lazy').setup({
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
-    branch = '0.1.x',
+    branch = 'master', -- 0.1.x is abandoned (frozen May 2024) and breaks on Neovim 0.11+ (make_position_params encoding)
     opts = {
       defaults = {
         color_devicons = true,
@@ -842,10 +842,9 @@ require('lazy').setup({
 
       vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#589ed7' })
       vim.diagnostic.config(opts.diagnostics)
-      vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
-        border = 'rounded',
-        -- You can add more options if needed
-      })
+      vim.keymap.set('n', 'K', function()
+        vim.lsp.buf.hover { border = 'rounded' }
+      end)
     end,
   },
 
@@ -1014,6 +1013,51 @@ require('lazy').setup({
       indent = { enable = true, disable = { 'ruby' } },
       conflict_marker = { enable = true },
     },
+    config = function(_, opts)
+      -- Compat shim for Neovim 0.13+ (nightly). The runtime dropped the
+      -- `all = false` opt from query.add_predicate/add_directive, so capture
+      -- matches are now always passed as TSNode[] lists. nvim-treesitter's
+      -- frozen `master` branch (supports nvim <= 0.11) still does
+      -- `local node = match[id]` expecting a single node, then calls
+      -- get_node_text(node) -> node:range() and crashes on the list.
+      -- We wrap registration to normalize lists -> last node for ONLY
+      -- nvim-treesitter's own handlers, then restore the originals so other
+      -- plugins (and any handler written for the new list API) are untouched.
+      local tsq = require 'vim.treesitter.query'
+      local orig_pred, orig_dir = tsq.add_predicate, tsq.add_directive
+
+      local function normalize(match)
+        local m = {}
+        for k, v in pairs(match) do
+          if type(v) == 'table' then
+            m[k] = v[#v] -- empty list -> nil, preserving each handler's `if not node` guard
+          else
+            m[k] = v
+          end
+        end
+        return m
+      end
+
+      tsq.add_predicate = function(name, handler, o)
+        return orig_pred(name, function(match, ...)
+          return handler(normalize(match), ...)
+        end, o)
+      end
+      tsq.add_directive = function(name, handler, o)
+        return orig_dir(name, function(match, ...)
+          return handler(normalize(match), ...)
+        end, o)
+      end
+
+      -- Force a fresh load so all registrations in query_predicates.lua run
+      -- through the wrappers (force=true in that module allows re-registration).
+      package.loaded['nvim-treesitter.query_predicates'] = nil
+      require 'nvim-treesitter.query_predicates'
+
+      tsq.add_predicate, tsq.add_directive = orig_pred, orig_dir
+
+      require('nvim-treesitter.configs').setup(opts)
+    end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
