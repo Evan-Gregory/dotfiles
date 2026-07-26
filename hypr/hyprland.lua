@@ -1,5 +1,4 @@
 HOME = os.getenv("HOME")
-local wallpaper = HOME .. "/.config/hypr/wallpapers/studio_gibbs.png"
 
 require("hyprland.env")
 require("hyprland.monitors")

@@ -31,11 +31,13 @@ create_symlink fish "$CONFIG_DIR/fish"
 create_symlink wofi "$CONFIG_DIR/wofi"
 create_symlink btop "$CONFIG_DIR/btop"
 create_symlink starship.toml "$CONFIG_DIR/starship.toml"
-create_symlink tmux "$CONFIG_DIR/tmux"
+# create_symlink tmux "$HOME/.tmux.conf"
 create_symlink lazygit "$CONFIG_DIR/lazygit"
 create_symlink nushell "$CONFIG_DIR/nushell"
 create_symlink quickshell "$CONFIG_DIR/quickshell"
 create_symlink yazi "$CONFIG_DIR/yazi"
+create_symlink hyprshell "$CONFIG_DIR/hyprshell"
+create_symlink flameshot "$CONFIG_DIR/flameshot"
 
 # TODO: standatdize this 
 if [ -e "$HOME/Documents/awww/target/release/awww" ] || [ -L "$HOME/Documents/awww/target/release/awww" ]; then
@@ -58,7 +60,7 @@ if [ -e "/etc/tmux.conf" ] || [ -L "/etc/tmux.conf" ]; then
   sudo trash "/etc/tmux.conf"
 fi
 sudo ln -sf "$DOTFILES/tmux/tmux.conf" /etc/tmux.conf
-sudo ln -df "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf" 
+sudo ln -sf "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf" 
 
 if [ -e "/etc/greetd/config.toml" ] || [ -L "/etc/greetd/config.toml" ]; then
   sudo trash "/etc/greetd/config.toml"

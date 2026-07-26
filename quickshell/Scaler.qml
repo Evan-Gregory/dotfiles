@@ -17,9 +17,13 @@ Item {
         return LayoutMath.s(val, baseScale);
     }
 
+    // Optional per-user scale override, resolved relative to this file so the
+    // shell is self-contained. Absent file -> uiScale stays 1.0 (see settings.json).
+    readonly property string settingsFile: Qt.resolvedUrl("settings.json").toString().replace(/^file:\/\//, "")
+
     Process {
         id: scaleReader
-        command: ["bash", "-c", "cat ~/.config/hypr/settings.json 2>/dev/null || echo '{}'"]
+        command: ["bash", "-c", "cat '" + root.settingsFile + "' 2>/dev/null || echo '{}'"]
         running: true
         stdout: StdioCollector {
             onStreamFinished: {
@@ -37,7 +41,7 @@ Item {
 
     Process {
         id: scaleWatcher
-        command: ["bash", "-c", "while [ ! -f ~/.config/hypr/settings.json ]; do sleep 1; done; inotifywait -qq -e modify,close_write ~/.config/hypr/settings.json"]
+        command: ["bash", "-c", "F='" + root.settingsFile + "'; while [ ! -f \"$F\" ]; do sleep 1; done; inotifywait -qq -e modify,close_write \"$F\""]
         running: true
         stdout: StdioCollector {
             onStreamFinished: {

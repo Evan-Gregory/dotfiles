@@ -1,0 +1,12 @@
+[terminal]
+vt = 1
+
+# Auto-login once when greetd starts
+[initial_session]
+command = "Hyprland"
+user = "evang"
+
+# What to run whenever no session is active (after logout)
+[default_session]
+command = "agreety --cmd Hyprland"
+user = "greeter"

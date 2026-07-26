@@ -1,0 +1,13 @@
+{
+    "audio": {
+        "increment": 0.1,
+        "maxVolume": 1
+    },
+    "uiScale": 0.996702806122449,
+    "vpn": {
+        "enabled": false,
+        "provider": [
+        ]
+    },
+    "wallpaperDir": ""
+}

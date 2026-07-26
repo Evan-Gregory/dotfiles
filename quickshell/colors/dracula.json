@@ -1,0 +1,33 @@
+{
+    "_scheme": "dracula",
+    "mode": "dark",
+    "_note": "Semantic palette used by every shell component (base/surface/overlay/text + accents). Values are Dracula. To add a scheme, copy this file, edit the values, and point colors/current.json at it (see colors/set-scheme.sh).",
+
+    "base":     "#282a36",
+    "mantle":   "#21222c",
+    "crust":    "#191a21",
+
+    "text":     "#f8f8f2",
+    "subtext1": "#e2e2ec",
+    "subtext0": "#50fa7b",
+
+    "surface0": "#343746",
+    "surface1": "#44475a",
+    "surface2": "#565872",
+
+    "overlay0": "#6272a4",
+    "overlay1": "#7a86b8",
+    "overlay2": "#939ac7",
+
+    "blue":     "#bd93f9",
+    "sapphire": "#8be9fd",
+    "sky":      "#8be9fd",
+    "teal":     "#8be9fd",
+    "green":    "#50fa7b",
+    "yellow":   "#f1fa8c",
+    "peach":    "#ffb86c",
+    "maroon":   "#ff6e6e",
+    "red":      "#ff5555",
+    "mauve":    "#bd93f9",
+    "pink":     "#ff79c6"
+}

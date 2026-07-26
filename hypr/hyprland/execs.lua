@@ -1,5 +1,6 @@
 local os = require("os")
 local io = require("io")
+local wall = require("scripts.wall")
 
 local function exec(cmd)
 	return os.execute(cmd)
@@ -36,51 +37,34 @@ local function nohup_append(cmd, logfile)
 	exec("nohup " .. cmd .. ' >> "' .. logfile .. '" 2>&1 &')
 end
 
-local HOME   = os.getenv("HOME")
-local LOG    = HOME .. "/.local/state/hypr/autostart.log"
+local HOME = os.getenv("HOME")
+local LOG = HOME .. "/.local/state/hypr/autostart.log"
 local CONFIG = HOME .. "/dotfiles/hypr"
 
 hl.on("hyprland.start", function()
 	exec('mkdir -p "' .. HOME .. '/.local/state/hypr"')
 	log(LOG, "autostart begin")
 
+	-- ── Lockscreen ────────────────────────────────────────────────────────────────
+	-- Launch first so the ext-session-lock engages as early as possible. greetd
+	-- autologins with no password, so this lock is the first authentication gate.
+	nohup_append("qs -p " .. HOME .. "/dotfiles/quickshell/Lock.qml", LOG)
+
 	-- ── Environment ───────────────────────────────────────────────────────────────
-	exec("dbus-update-activation-environment --systemd XDG_CURRENT_DESKTOP=Hyprland XDG_SESSION_TYPE=wayland MOZ_ENABLE_WAYLAND=1")
-
-	-- ── Journal: create today's entry ─────────────────────────────────────────────
-	local today        = shell("date +'%Y-%m-%d'")
-	local header_date  = shell("date '+%A, %B %d, %Y'")
-	local journal_dir  = HOME .. "/wiki/journal"
-	local journal_file = journal_dir .. "/" .. today .. ".md"
-	exec('mkdir -p "' .. journal_dir .. '"')
-	local jf = io.open(journal_file, "w")
-	if jf then
-		jf:write("# " .. header_date .. "\n## Todo: \n_________________________________________________________________________________\n")
-		jf:close()
-	end
-
-	-- ── Waybar ────────────────────────────────────────────────────────────────────
-	if command_exists("waybar") then
-		nohup_append(
-			'waybar -c "' .. HOME .. '/.config/hypr/component/waybar/config"'
-			.. ' -s "' .. HOME .. '/.config/hypr/component/waybar/style.css"',
-			LOG
-		)
-	end
+	exec(
+		"dbus-update-activation-environment --systemd XDG_CURRENT_DESKTOP=Hyprland XDG_SESSION_TYPE=wayland MOZ_ENABLE_WAYLAND=1"
+	)
 
 	-- ── Wallpaper ─────────────────────────────────────────────────────────────────
-	local wallpaper = CONFIG .. "/wallpapers/studio_gibbs.png"
-	if command_exists("awww-daemon") then
-		local pid = shell("pgrep -x awww-daemon")
-		if pid == "" then
-			exec("awww-daemon &")
-			exec("sleep 1")
-		end
-		local pos = shell("hyprctl cursorpos")
-		exec('awww img --transition-type grow --transition-pos "' .. pos .. '" --transition-duration 3 "' .. wallpaper .. '"')
-	elseif command_exists("awww") then
-		exec("awww init")
-		exec('awww img "' .. wallpaper .. '" &')
+	wall(CONFIG .. "/wallpapers/f.jpg")
+
+	-- ── Unified quickshell shell (wallpaper + launcher overlays via IPC) ───────────
+	-- Background daemon; keybinds (SUPER+Space / SUPER+W) toggle its overlays.
+	if command_exists("qs") then
+		nohup_append("qs -p " .. HOME .. "/dotfiles/quickshell/shell.qml", LOG)
+		nohup_append("qs -p " .. HOME .. "/dotfiles/quickshell/visualiser", LOG)
+	else
+		log("Shell unable to initialize")
 	end
 
 	-- ── Tmux sessions ─────────────────────────────────────────────────────────────
@@ -90,7 +74,6 @@ hl.on("hyprland.start", function()
 		exec("tmux new-window -t " .. session .. ":2 -n TERMINAL")
 		exec("tmux new-window -t " .. session .. ":3 -n DOTS")
 		exec("tmux new-window -t " .. session .. ":4 -n BTOP")
-		exec("tmux send-keys -t " .. session .. ":JOURNAL 'nvim " .. journal_file .. "' C-m")
 		exec("tmux send-keys -t " .. session .. ":DOTS 'cd ~/dotfiles' C-m")
 		exec("tmux send-keys -t " .. session .. ":BTOP 'btop' C-m")
 	end
@@ -98,6 +81,13 @@ hl.on("hyprland.start", function()
 	-- ── Notification daemon ────────────────────────────────────────────────────────
 	if command_exists("dunst") then
 		nohup_append("dunst", LOG)
+	end
+
+	-- ── Flameshot daemon ───────────────────────────────────────────────────────────
+	-- Flameshot (v14+) captures via the xdg-desktop-portal Screenshot API, which
+	-- needs graphical-session.target up — see hypr/autostart / PORTAL-SESSION.md.
+	if command_exists("flameshot") then
+		nohup_append("flameshot", LOG)
 	end
 
 	-- ── PolicyKit agent ───────────────────────────────────────────────────────────

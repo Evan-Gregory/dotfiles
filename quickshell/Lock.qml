@@ -8,11 +8,13 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Services.Pam
-import "../"
 
 ShellRoot {
     id: root
-    MatugenColors { id: _theme }
+
+    Caching { id: paths }
+
+    Theme { id: _theme }
     readonly property color base: _theme.base
     readonly property color crust: _theme.crust
     readonly property color mantle: _theme.mantle
@@ -109,7 +111,7 @@ ShellRoot {
                 readonly property real sc: scaler.baseScale
                 // --------------------------------
 
-                property string staticWallpaperPath: "file://" + Quickshell.env("HOME") + "/.cache/current_wallpaper.png"
+                property string staticWallpaperPath: "file://" + paths.getCacheDir("wallpaper_picker") + "/current_wallpaper.png"
 
                 property string batPct: "100"
                 property string batStatus: "AC"
@@ -211,7 +213,7 @@ ShellRoot {
 
                 Process {
                     id: weatherPoller
-                    property string scriptPath: Qt.resolvedUrl("calendar/weather.sh").toString().replace(/^file:\/\//, "")
+                    property string scriptPath: Qt.resolvedUrl("lock/weather.sh").toString().replace(/^file:\/\//, "")
                     command: ["bash", "-c", '"' + scriptPath + '" --current-icon; "' + scriptPath + '" --current-temp']
                     stdout: StdioCollector {
                         onStreamFinished: {
